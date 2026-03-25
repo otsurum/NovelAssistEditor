@@ -1,10 +1,3 @@
-//
-//  NovelAssistEditorUITests.swift
-//  NovelAssistEditorUITests
-//
-//  Created by 鶴見駿 on 2026/03/25.
-//
-
 import XCTest
 
 final class NovelAssistEditorUITests: XCTestCase {
