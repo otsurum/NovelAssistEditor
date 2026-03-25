@@ -1,0 +1,556 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXContainerItemProxy section */
+		F3B01CAA2F742C4600809F8B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F3B01C932F742C4500809F8B /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F3B01C9A2F742C4500809F8B;
+			remoteInfo = NovelAssistEditor;
+		};
+		F3B01CB42F742C4600809F8B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F3B01C932F742C4500809F8B /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F3B01C9A2F742C4500809F8B;
+			remoteInfo = NovelAssistEditor;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		F3B01C9B2F742C4500809F8B /* NovelAssistEditor.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NovelAssistEditor.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		F3B01CA92F742C4600809F8B /* NovelAssistEditorTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NovelAssistEditorTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		F3B01CB32F742C4600809F8B /* NovelAssistEditorUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NovelAssistEditorUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		F3B01C9D2F742C4500809F8B /* NovelAssistEditor */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = NovelAssistEditor;
+			sourceTree = "<group>";
+		};
+		F3B01CAC2F742C4600809F8B /* NovelAssistEditorTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = NovelAssistEditorTests;
+			sourceTree = "<group>";
+		};
+		F3B01CB62F742C4600809F8B /* NovelAssistEditorUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = NovelAssistEditorUITests;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		F3B01C982F742C4500809F8B /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F3B01CA62F742C4600809F8B /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F3B01CB02F742C4600809F8B /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		F3B01C922F742C4500809F8B = {
+			isa = PBXGroup;
+			children = (
+				F3B01C9D2F742C4500809F8B /* NovelAssistEditor */,
+				F3B01CAC2F742C4600809F8B /* NovelAssistEditorTests */,
+				F3B01CB62F742C4600809F8B /* NovelAssistEditorUITests */,
+				F3B01C9C2F742C4500809F8B /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		F3B01C9C2F742C4500809F8B /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				F3B01C9B2F742C4500809F8B /* NovelAssistEditor.app */,
+				F3B01CA92F742C4600809F8B /* NovelAssistEditorTests.xctest */,
+				F3B01CB32F742C4600809F8B /* NovelAssistEditorUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		F3B01C9A2F742C4500809F8B /* NovelAssistEditor */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F3B01CBD2F742C4600809F8B /* Build configuration list for PBXNativeTarget "NovelAssistEditor" */;
+			buildPhases = (
+				F3B01C972F742C4500809F8B /* Sources */,
+				F3B01C982F742C4500809F8B /* Frameworks */,
+				F3B01C992F742C4500809F8B /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				F3B01C9D2F742C4500809F8B /* NovelAssistEditor */,
+			);
+			name = NovelAssistEditor;
+			packageProductDependencies = (
+			);
+			productName = NovelAssistEditor;
+			productReference = F3B01C9B2F742C4500809F8B /* NovelAssistEditor.app */;
+			productType = "com.apple.product-type.application";
+		};
+		F3B01CA82F742C4600809F8B /* NovelAssistEditorTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F3B01CC02F742C4600809F8B /* Build configuration list for PBXNativeTarget "NovelAssistEditorTests" */;
+			buildPhases = (
+				F3B01CA52F742C4600809F8B /* Sources */,
+				F3B01CA62F742C4600809F8B /* Frameworks */,
+				F3B01CA72F742C4600809F8B /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				F3B01CAB2F742C4600809F8B /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				F3B01CAC2F742C4600809F8B /* NovelAssistEditorTests */,
+			);
+			name = NovelAssistEditorTests;
+			packageProductDependencies = (
+			);
+			productName = NovelAssistEditorTests;
+			productReference = F3B01CA92F742C4600809F8B /* NovelAssistEditorTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		F3B01CB22F742C4600809F8B /* NovelAssistEditorUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F3B01CC32F742C4600809F8B /* Build configuration list for PBXNativeTarget "NovelAssistEditorUITests" */;
+			buildPhases = (
+				F3B01CAF2F742C4600809F8B /* Sources */,
+				F3B01CB02F742C4600809F8B /* Frameworks */,
+				F3B01CB12F742C4600809F8B /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				F3B01CB52F742C4600809F8B /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				F3B01CB62F742C4600809F8B /* NovelAssistEditorUITests */,
+			);
+			name = NovelAssistEditorUITests;
+			packageProductDependencies = (
+			);
+			productName = NovelAssistEditorUITests;
+			productReference = F3B01CB32F742C4600809F8B /* NovelAssistEditorUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		F3B01C932F742C4500809F8B /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1630;
+				LastUpgradeCheck = 1630;
+				TargetAttributes = {
+					F3B01C9A2F742C4500809F8B = {
+						CreatedOnToolsVersion = 16.3;
+					};
+					F3B01CA82F742C4600809F8B = {
+						CreatedOnToolsVersion = 16.3;
+						TestTargetID = F3B01C9A2F742C4500809F8B;
+					};
+					F3B01CB22F742C4600809F8B = {
+						CreatedOnToolsVersion = 16.3;
+						TestTargetID = F3B01C9A2F742C4500809F8B;
+					};
+				};
+			};
+			buildConfigurationList = F3B01C962F742C4500809F8B /* Build configuration list for PBXProject "NovelAssistEditor" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = F3B01C922F742C4500809F8B;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = F3B01C9C2F742C4500809F8B /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				F3B01C9A2F742C4500809F8B /* NovelAssistEditor */,
+				F3B01CA82F742C4600809F8B /* NovelAssistEditorTests */,
+				F3B01CB22F742C4600809F8B /* NovelAssistEditorUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		F3B01C992F742C4500809F8B /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F3B01CA72F742C4600809F8B /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F3B01CB12F742C4600809F8B /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		F3B01C972F742C4500809F8B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F3B01CA52F742C4600809F8B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F3B01CAF2F742C4600809F8B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		F3B01CAB2F742C4600809F8B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F3B01C9A2F742C4500809F8B /* NovelAssistEditor */;
+			targetProxy = F3B01CAA2F742C4600809F8B /* PBXContainerItemProxy */;
+		};
+		F3B01CB52F742C4600809F8B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F3B01C9A2F742C4500809F8B /* NovelAssistEditor */;
+			targetProxy = F3B01CB42F742C4600809F8B /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		F3B01CBB2F742C4600809F8B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = J37PZZ77T2;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.4;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		F3B01CBC2F742C4600809F8B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = J37PZZ77T2;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.4;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+			};
+			name = Release;
+		};
+		F3B01CBE2F742C4600809F8B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = NovelAssistEditor/NovelAssistEditor.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = J37PZZ77T2;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = sample.NovelAssistEditor;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		F3B01CBF2F742C4600809F8B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = NovelAssistEditor/NovelAssistEditor.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = J37PZZ77T2;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = sample.NovelAssistEditor;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		F3B01CC12F742C4600809F8B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = J37PZZ77T2;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.4;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = sample.NovelAssistEditorTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/NovelAssistEditor.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/NovelAssistEditor";
+			};
+			name = Debug;
+		};
+		F3B01CC22F742C4600809F8B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = J37PZZ77T2;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.4;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = sample.NovelAssistEditorTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/NovelAssistEditor.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/NovelAssistEditor";
+			};
+			name = Release;
+		};
+		F3B01CC42F742C4600809F8B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = J37PZZ77T2;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = sample.NovelAssistEditorUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_TARGET_NAME = NovelAssistEditor;
+			};
+			name = Debug;
+		};
+		F3B01CC52F742C4600809F8B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = J37PZZ77T2;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = sample.NovelAssistEditorUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_TARGET_NAME = NovelAssistEditor;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		F3B01C962F742C4500809F8B /* Build configuration list for PBXProject "NovelAssistEditor" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F3B01CBB2F742C4600809F8B /* Debug */,
+				F3B01CBC2F742C4600809F8B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F3B01CBD2F742C4600809F8B /* Build configuration list for PBXNativeTarget "NovelAssistEditor" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F3B01CBE2F742C4600809F8B /* Debug */,
+				F3B01CBF2F742C4600809F8B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F3B01CC02F742C4600809F8B /* Build configuration list for PBXNativeTarget "NovelAssistEditorTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F3B01CC12F742C4600809F8B /* Debug */,
+				F3B01CC22F742C4600809F8B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F3B01CC32F742C4600809F8B /* Build configuration list for PBXNativeTarget "NovelAssistEditorUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F3B01CC42F742C4600809F8B /* Debug */,
+				F3B01CC52F742C4600809F8B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = F3B01C932F742C4500809F8B /* Project object */;
+}
