@@ -1,4 +1,4 @@
-.PHONY: lint fmt
+.PHONY: fmt lint
 
 lint:
 	swiftlint
