@@ -6,16 +6,17 @@ import PackageDescription
 let package = Package(
     name: "Persistance",
     platforms: [
-        .macOS(.v14)
+        .macOS(.v14),
     ],
     products: [
         // Products define the executables and libraries a package produces, making them visible to other packages.
         .library(
             name: "Persistance",
-            targets: ["Persistance"]),
+            targets: ["Persistance"]
+        ),
     ],
     dependencies: [
-        .package(path: "../AppCore")
+        .package(path: "../AppCore"),
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
@@ -23,7 +24,7 @@ let package = Package(
         .target(
             name: "Persistance",
             dependencies: [
-                "AppCore"
+                "AppCore",
             ]
         ),
         .testTarget(

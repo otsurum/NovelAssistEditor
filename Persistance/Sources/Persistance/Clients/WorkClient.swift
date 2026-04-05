@@ -1,6 +1,6 @@
+import AppCore
 import Foundation
 import SwiftData
-import AppCore
 
 public final class WorkClient: WorkRepository {
     private let modelContext: ModelContext
@@ -12,7 +12,7 @@ public final class WorkClient: WorkRepository {
     public func fetchAll() throws -> [Work] {
         let descriptor = FetchDescriptor<WorkEntity>(
             sortBy: [
-                SortDescriptor(\WorkEntity.updatedAt, order: .reverse)
+                SortDescriptor(\WorkEntity.updatedAt, order: .reverse),
             ]
         )
 
@@ -64,7 +64,7 @@ public enum WorkClientError: LocalizedError {
     public var errorDescription: String? {
         switch self {
         case .workNotFound:
-            return "対象の作品が見つかりません。"
+            "対象の作品が見つかりません。"
         }
     }
 }

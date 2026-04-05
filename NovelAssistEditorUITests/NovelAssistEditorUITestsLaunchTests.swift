@@ -1,7 +1,6 @@
 import XCTest
 
 final class NovelAssistEditorUITestsLaunchTests: XCTestCase {
-
     override class var runsForEachTargetApplicationUIConfiguration: Bool {
         true
     }
@@ -11,7 +10,7 @@ final class NovelAssistEditorUITestsLaunchTests: XCTestCase {
     }
 
     @MainActor
-    func testLaunch() throws {
+    func testLaunch() {
         let app = XCUIApplication()
         app.launch()
 

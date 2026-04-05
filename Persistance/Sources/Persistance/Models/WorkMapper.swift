@@ -1,5 +1,5 @@
-import Foundation
 import AppCore
+import Foundation
 
 enum WorkMapper {
     static func toDomain(_ entity: WorkEntity) -> Work {

@@ -6,17 +6,18 @@ import PackageDescription
 let package = Package(
     name: "AppFeature",
     platforms: [
-        .macOS(.v14)
+        .macOS(.v14),
     ],
     products: [
         // Products define the executables and libraries a package produces, making them visible to other packages.
         .library(
             name: "AppFeature",
-            targets: ["AppFeature", "WorkListFeature"]),
+            targets: ["AppFeature", "WorkListFeature"]
+        ),
     ],
     dependencies: [
         .package(path: "../AppCore"),
-        .package(url: "https://github.com/pointfreeco/swift-composable-architecture", from: "1.10.0")
+        .package(url: "https://github.com/pointfreeco/swift-composable-architecture", from: "1.10.0"),
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
@@ -25,14 +26,14 @@ let package = Package(
             name: "AppFeature",
             dependencies: [
                 "AppCore",
-                "WorkListFeature"
+                "WorkListFeature",
             ]
         ),
         .target(
             name: "WorkListFeature",
             dependencies: [
                 "AppCore",
-                .product(name: "ComposableArchitecture", package: "swift-composable-architecture")
+                .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
             ]
         ),
         .testTarget(

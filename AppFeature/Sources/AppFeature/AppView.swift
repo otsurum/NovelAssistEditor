@@ -1,12 +1,12 @@
-import SwiftUI
 import ComposableArchitecture
+import SwiftUI
 import WorkListFeature
 
 public struct AppView: View {
     let store: StoreOf<WorkListFeature>
 
     public init() {
-        self.store = Store(initialState: WorkListFeature.State()) {
+        store = Store(initialState: WorkListFeature.State()) {
             WorkListFeature()
         }
     }

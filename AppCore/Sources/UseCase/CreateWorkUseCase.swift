@@ -36,7 +36,7 @@ public enum WorkValidationError: LocalizedError {
     public var errorDescription: String? {
         switch self {
         case .emptyTitle:
-            return "タイトルは必須です。"
+            "タイトルは必須です。"
         }
     }
 }
