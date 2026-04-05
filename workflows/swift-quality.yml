@@ -1,0 +1,39 @@
+name: Swift Quality
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+jobs:
+  format-check:
+    name: format-check
+    runs-on: macos-14
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install swift-format
+        run: brew install swift-format
+
+      - name: Run formatter
+        run: make fmt
+
+      - name: Fail if formatting changed files
+        run: git diff --exit-code
+
+  lint:
+    name: lint
+    runs-on: macos-14
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install SwiftLint
+        run: brew install swiftlint
+
+      - name: Run lint
+        run: make lint
