@@ -1,0 +1,51 @@
+# =========================
+# macOS
+# =========================
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# =========================
+# Xcode
+# =========================
+build/
+DerivedData/
+*.xcworkspace
+!default.xcworkspace
+xcuserdata/
+*.xcuserstate
+
+# Xcode user settings
+*.xcscmblueprint
+*.xccheckout
+
+# =========================
+# Swift Package Manager
+# =========================
+.build/
+Packages/
+Package.resolved
+
+# =========================
+# SwiftData / CoreData
+# =========================
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+
+# =========================
+# Logs
+# =========================
+*.log
+
+# =========================
+# Temporary files
+# =========================
+*.swp
+*.tmp
+
+# =========================
+# Environment / Secrets
+# =========================
+.env
+.env.*
