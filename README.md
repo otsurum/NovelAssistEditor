@@ -102,3 +102,70 @@ public struct AppFeature {
     }
 }
 ```
+
+---
+
+## CI/CD - Make Commands
+
+このプロジェクトでは、コード品質の維持とビルドプロセスを自動化するために **Make** コマンドを提供しています。
+
+### 利用可能なコマンド
+
+#### 1. フォーマット（`make fmt`）
+**目的:** コードスタイルを統一する
+
+```bash
+make fmt
+```
+
+- **ツール:** SwiftFormat
+- **実行内容:** プロジェクト全体のコードを自動フォーマットします。
+- **設定ファイル:** `.swiftformat`
+  - インデント: 4 スペース
+  - 最大幅: 120 文字
+  - Swift バージョン: 6.0
+
+#### 2. Lint（`make lint`）
+**目的:** コード品質チェックと潜在的なバグの検出
+
+```bash
+make lint
+```
+
+- **ツール:** SwiftLint
+- **実行内容:** コーディング規約の違反や潜在的な問題をチェックします。
+- **設定ファイル:** `.swiftlint.yml`
+  - 対象: AppCore、AppFeature、Persistance、NovelAssistEditor
+  - 除外: .build、DerivedData
+
+### 推奨使用フロー
+
+1. **開発中:** コードを書く
+2. **Commit 前:** 
+   ```bash
+   make fmt    # コードをフォーマット
+   make lint   # 品質チェック
+   ```
+3. **確認:** エラーがなければ git add & commit
+
+### CI/CD パイプラインでの活用
+
+GitHub Actions や他の CI/CD ツールで以下のように設定できます：
+
+```yaml
+- name: Format Check
+  run: make fmt
+  
+- name: Lint Check
+  run: make lint
+```
+
+### トラブルシューティング
+
+**SwiftLint のエラー:** "SourceKitdInProc failed"
+- Xcode を起動してプロジェクトをビルドすることで解決する場合があります。
+- または、Xcode 内蔵の静的解析を使用してください。
+
+**SwiftFormat が実行されない:**
+- Homebrew から再インストール：`brew reinstall swiftformat`
+- PATH を確認：`which swiftformat`
