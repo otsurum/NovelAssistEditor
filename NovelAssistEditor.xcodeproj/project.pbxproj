@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F3CA70892F8E89A4001ADDD1 /* AppCore in Frameworks */ = {isa = PBXBuildFile; productRef = F3CA70882F8E89A4001ADDD1 /* AppCore */; };
+		F3CA708C2F8E89B8001ADDD1 /* Persistance in Frameworks */ = {isa = PBXBuildFile; productRef = F3CA708B2F8E89B8001ADDD1 /* Persistance */; };
+		F3CA708F2F8E89C9001ADDD1 /* AppFeature in Frameworks */ = {isa = PBXBuildFile; productRef = F3CA708E2F8E89C9001ADDD1 /* AppFeature */; };
 		F3D6730C2F74302200A9F0F6 /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = F3D6730B2F74302200A9F0F6 /* ComposableArchitecture */; };
 /* End PBXBuildFile section */
 
@@ -31,7 +34,6 @@
 		F3B01C9B2F742C4500809F8B /* NovelAssistEditor.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NovelAssistEditor.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F3B01CA92F742C4600809F8B /* NovelAssistEditorTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NovelAssistEditorTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F3B01CB32F742C4600809F8B /* NovelAssistEditorUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NovelAssistEditorUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		F3E2EBAF2F7438040015FDA1 /* MyPackage */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = MyPackage; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -57,7 +59,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F3CA708C2F8E89B8001ADDD1 /* Persistance in Frameworks */,
 				F3D6730C2F74302200A9F0F6 /* ComposableArchitecture in Frameworks */,
+				F3CA70892F8E89A4001ADDD1 /* AppCore in Frameworks */,
+				F3CA708F2F8E89C9001ADDD1 /* AppFeature in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -86,7 +91,6 @@
 				F3B01CB62F742C4600809F8B /* NovelAssistEditorUITests */,
 				F3D6730A2F74302200A9F0F6 /* Frameworks */,
 				F3B01C9C2F742C4500809F8B /* Products */,
-				F3E2EBAF2F7438040015FDA1 /* MyPackage */,
 			);
 			sourceTree = "<group>";
 		};
@@ -128,6 +132,9 @@
 			name = NovelAssistEditor;
 			packageProductDependencies = (
 				F3D6730B2F74302200A9F0F6 /* ComposableArchitecture */,
+				F3CA70882F8E89A4001ADDD1 /* AppCore */,
+				F3CA708B2F8E89B8001ADDD1 /* Persistance */,
+				F3CA708E2F8E89C9001ADDD1 /* AppFeature */,
 			);
 			productName = NovelAssistEditor;
 			productReference = F3B01C9B2F742C4500809F8B /* NovelAssistEditor.app */;
@@ -213,7 +220,9 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				F3B01CC62F742FD200809F8B /* XCRemoteSwiftPackageReference "swift-composable-architecture" */,
-				F3D6730D2F7432E600A9F0F6 /* XCLocalSwiftPackageReference "../MyPackage" */,
+				F3CA70872F8E89A4001ADDD1 /* XCLocalSwiftPackageReference "AppCore" */,
+				F3CA708A2F8E89B8001ADDD1 /* XCLocalSwiftPackageReference "Persistance" */,
+				F3CA708D2F8E89C9001ADDD1 /* XCLocalSwiftPackageReference "AppFeature" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = F3B01C9C2F742C4500809F8B /* Products */;
@@ -573,9 +582,17 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		F3D6730D2F7432E600A9F0F6 /* XCLocalSwiftPackageReference "../MyPackage" */ = {
+		F3CA70872F8E89A4001ADDD1 /* XCLocalSwiftPackageReference "AppCore" */ = {
 			isa = XCLocalSwiftPackageReference;
-			relativePath = ../MyPackage;
+			relativePath = AppCore;
+		};
+		F3CA708A2F8E89B8001ADDD1 /* XCLocalSwiftPackageReference "Persistance" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Persistance;
+		};
+		F3CA708D2F8E89C9001ADDD1 /* XCLocalSwiftPackageReference "AppFeature" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = AppFeature;
 		};
 /* End XCLocalSwiftPackageReference section */
 
@@ -591,6 +608,18 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		F3CA70882F8E89A4001ADDD1 /* AppCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AppCore;
+		};
+		F3CA708B2F8E89B8001ADDD1 /* Persistance */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Persistance;
+		};
+		F3CA708E2F8E89C9001ADDD1 /* AppFeature */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AppFeature;
+		};
 		F3D6730B2F74302200A9F0F6 /* ComposableArchitecture */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = F3B01CC62F742FD200809F8B /* XCRemoteSwiftPackageReference "swift-composable-architecture" */;
