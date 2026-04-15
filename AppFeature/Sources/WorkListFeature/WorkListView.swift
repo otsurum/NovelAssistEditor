@@ -47,15 +47,12 @@ public struct WorkListView: View {
 
                 ToolbarItem(placement: .automatic) {
                     Button {
-                        store.send(.retryButtonTapped)
+                        
                     } label: {
                         Label("再読み込み", systemImage: "arrow.clockwise")
                     }
                 }
             }
-        }
-        .task {
-            await store.send(.task).finish()
         }
     }
 }
