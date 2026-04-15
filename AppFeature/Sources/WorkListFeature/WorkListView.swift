@@ -40,9 +40,7 @@ public struct WorkListView: View {
             .navigationTitle("作品")
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {
-                    Button {
-                        store.send(.addButtonTapped)
-                    } label: {
+                    Button {} label: {
                         Label("新規作成", systemImage: "plus")
                     }
                 }
@@ -59,8 +57,5 @@ public struct WorkListView: View {
         .task {
             await store.send(.task).finish()
         }
-        .alert(
-            store: store.scope(state: \.$alert, action: \.alert)
-        )
     }
 }
