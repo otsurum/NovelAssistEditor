@@ -99,7 +99,7 @@ public struct WorkListFeature {
                 state.works = works
                 return .none
 
-            case let .worksResponse(.failure(error)):
+            case .worksResponse(.failure):
                 state.isLoading = false
                 return .none
 
