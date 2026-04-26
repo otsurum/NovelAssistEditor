@@ -12,6 +12,9 @@ public struct WorkListView: View {
         NavigationStack {
             WorkList(store: store)
                 .navigationTitle("作品")
+                .onAppear {
+                    store.send(.onAppear)
+                }
                 .toolbar {
                     ToolbarItem(placement: .primaryAction) {
                         Button {

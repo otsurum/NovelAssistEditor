@@ -17,6 +17,7 @@ let package = Package(
     ],
     dependencies: [
         .package(path: "../AppCore"),
+        .package(path: "../Persistance"),
         .package(url: "https://github.com/pointfreeco/swift-composable-architecture", from: "1.10.0"),
     ],
     targets: [
@@ -33,6 +34,7 @@ let package = Package(
             name: "WorkListFeature",
             dependencies: [
                 "AppCore",
+                "Persistance",
                 .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
             ]
         ),
