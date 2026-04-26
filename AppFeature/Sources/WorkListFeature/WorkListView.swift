@@ -40,18 +40,22 @@ public struct WorkListView: View {
             .navigationTitle("作品")
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {
-                    Button {} label: {
+                    Button {
+                        store.send(.showCreateModal)
+                    } label: {
                         Label("新規作成", systemImage: "plus")
                     }
                 }
 
                 ToolbarItem(placement: .automatic) {
-                    Button {
-                        
-                    } label: {
+                    Button {} label: {
                         Label("再読み込み", systemImage: "arrow.clockwise")
                     }
                 }
+            }
+            .sheet(isPresented: .constant(store.isShowingCreateModal)) {
+                CreateWorkModal(store: store)
+                    .presentationDetents([.medium, .large])
             }
         }
     }
