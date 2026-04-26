@@ -60,11 +60,17 @@ public final class WorkClient: WorkRepository {
 
 public enum WorkClientError: LocalizedError {
     case workNotFound
+    case databaseAccessFailed(String)
+    case invalidData(String)
 
     public var errorDescription: String? {
         switch self {
         case .workNotFound:
             "対象の作品が見つかりません。"
+        case let .databaseAccessFailed(reason):
+            "データベースへのアクセスに失敗しました：\(reason)"
+        case let .invalidData(reason):
+            "無効なデータです：\(reason)"
         }
     }
 }
