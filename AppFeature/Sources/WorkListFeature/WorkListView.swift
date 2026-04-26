@@ -23,12 +23,6 @@ public struct WorkListView: View {
                             Label("新規作成", systemImage: "plus")
                         }
                     }
-
-                    ToolbarItem(placement: .automatic) {
-                        Button {} label: {
-                            Label("再読み込み", systemImage: "arrow.clockwise")
-                        }
-                    }
                 }
                 .sheet(isPresented: .constant(store.isShowingCreateModal)) {
                     CreateWorkModal(store: store)

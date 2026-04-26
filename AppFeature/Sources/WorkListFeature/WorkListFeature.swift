@@ -28,8 +28,6 @@ public struct WorkListFeature {
         case onAppear
         case showCreateModal
         case hideCreateModal
-        case task
-        case retryButtonTapped
         case createWork
         case createWorkFailed(String)
         case worksResponse(Result<[Work], FailureReason>)
@@ -77,22 +75,6 @@ public struct WorkListFeature {
                 state.isShowingCreateModal = false
                 state.createModalForm = CreateModalFormState()
                 return .none
-
-            case .task, .retryButtonTapped:
-                state.isLoading = true
-
-                return .run { [workListClient] send in
-                    do {
-                        let works = try await workListClient.fetchWorks()
-                        await send(.worksResponse(.success(works)))
-                    } catch {
-                        await send(
-                            .worksResponse(
-                                .failure(FailureReason(error.localizedDescription))
-                            )
-                        )
-                    }
-                }
 
             case let .worksResponse(.success(works)):
                 state.isLoading = false
