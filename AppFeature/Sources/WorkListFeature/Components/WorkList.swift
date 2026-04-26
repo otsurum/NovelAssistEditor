@@ -85,4 +85,3 @@ struct WorkCard: View {
         .shadow(radius: 2)
     }
 }
-

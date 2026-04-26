@@ -4,7 +4,7 @@ import Foundation
 import Persistance
 import SwiftData
 
-// Persistance から WorkClientError と WorkClient をインポート
+/// Persistance から WorkClientError と WorkClient をインポート
 typealias WorkClientError = Persistance.WorkClientError
 
 @DependencyClient

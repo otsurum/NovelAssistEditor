@@ -72,10 +72,12 @@ public struct WorkListFeature {
             case .showCreateModal:
                 state.isShowingCreateModal = true
                 return .none
+
             case .hideCreateModal:
                 state.isShowingCreateModal = false
                 state.createModalForm = CreateModalFormState()
                 return .none
+
             case .task, .retryButtonTapped:
                 state.isLoading = true
 

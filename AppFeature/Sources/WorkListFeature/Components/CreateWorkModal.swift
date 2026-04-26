@@ -28,14 +28,14 @@ public struct CreateWorkModal: View {
                         get: { store.createModalForm.title },
                         set: { store.send(.updateFormTitle($0)) }
                     ))
-                        .textFieldStyle(.roundedBorder)
+                    .textFieldStyle(.roundedBorder)
 
                     TextField("要約", text: .init(
                         get: { store.createModalForm.summary },
                         set: { store.send(.updateFormSummary($0)) }
                     ), axis: .vertical)
                         .textFieldStyle(.roundedBorder)
-                        .lineLimit(3...5)
+                        .lineLimit(3 ... 5)
                 }
 
                 Section(header: Text("執筆ノート")) {
@@ -44,14 +44,14 @@ public struct CreateWorkModal: View {
                         set: { store.send(.updateFormStyleMemo($0)) }
                     ), axis: .vertical)
                         .textFieldStyle(.roundedBorder)
-                        .lineLimit(3...5)
+                        .lineLimit(3 ... 5)
 
                     TextField("テーマ", text: .init(
                         get: { store.createModalForm.theme },
                         set: { store.send(.updateFormTheme($0)) }
                     ), axis: .vertical)
                         .textFieldStyle(.roundedBorder)
-                        .lineLimit(2...3)
+                        .lineLimit(2 ... 3)
                 }
             }
             .navigationTitle("新規作品")
