@@ -79,10 +79,12 @@ public struct WorkListFeature {
             case let .worksResponse(.success(works)):
                 state.isLoading = false
                 state.works = works
+                state.errorMessage = nil
                 return .none
 
-            case .worksResponse(.failure):
+            case let .worksResponse(.failure(reason)):
                 state.isLoading = false
+                state.errorMessage = reason.message
                 return .none
 
             case .createWork:

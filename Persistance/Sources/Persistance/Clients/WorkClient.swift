@@ -82,10 +82,21 @@ public enum WorkClientError: LocalizedError {
         switch self {
         case .workNotFound:
             "対象の作品が見つかりません。"
+        case .databaseAccessFailed:
+            "データベースへのアクセスに失敗しました。"
+        case .invalidData:
+            "データの読み込みに失敗しました。"
+        }
+    }
+
+    public var debugDescription: String {
+        switch self {
+        case .workNotFound:
+            "WorkClientError.workNotFound"
         case let .databaseAccessFailed(reason):
-            "データベースへのアクセスに失敗しました：\(reason)"
+            "WorkClientError.databaseAccessFailed: \(reason)"
         case let .invalidData(reason):
-            "無効なデータです：\(reason)"
+            "WorkClientError.invalidData: \(reason)"
         }
     }
 }
