@@ -158,7 +158,7 @@ public struct FailureReason: Error, Equatable, Sendable {
 ### 構成
 
 ```
-Persistence/
+Persistance/
 ├── Sources/Persistance/
 │   ├── Clients/
 │   │   ├── ModelContainerFactory.swift    # SwiftData 初期化
@@ -258,75 +258,70 @@ extension Array where Element == WorkEntity {
 ```swift
 // Persistance/Sources/Persistance/Clients/WorkClient.swift
 import AppCore
-import ComposableArchitecture
 import Foundation
+import SwiftData
 
-public struct WorkClient {
-    public var fetchWorks: () async throws -> [Work]
-    public var createWork: (Work) async throws -> Void
-    public var updateWork: (Work) async throws -> Void
-    public var deleteWork: (UUID) async throws -> Void
+public final class WorkClient: WorkRepository {
+    private let modelContext: ModelContext
 
-    public init(
-        fetchWorks: @escaping () async throws -> [Work],
-        createWork: @escaping (Work) async throws -> Void,
-        updateWork: @escaping (Work) async throws -> Void,
-        deleteWork: @escaping (UUID) async throws -> Void
-    ) {
-        self.fetchWorks = fetchWorks
-        self.createWork = createWork
-        self.updateWork = updateWork
-        self.deleteWork = deleteWork
+    public init(modelContext: ModelContext) {
+        self.modelContext = modelContext
     }
-}
 
-// Dependency Extension
-extension DependencyValues {
-    public var workClient: WorkClient {
-        get { self[WorkClient.self] }
-        set { self[WorkClient.self] = newValue }
+    public func fetchAll() throws -> [Work] {
+        let descriptor = FetchDescriptor<WorkEntity>(
+            sortBy: [
+                SortDescriptor(\WorkEntity.updatedAt, order: .reverse),
+            ]
+        )
+        let entities = try modelContext.fetch(descriptor)
+        return entities.map(WorkMapper.toDomain)
     }
-}
 
-// Live Implementation
-extension WorkClient: DependencyKey {
-    public static let liveValue: WorkClient = {
-        let container = ModelContainerFactory.shared.container
+    public func create(_ work: Work) throws {
+        let entity = WorkMapper.toEntity(work)
+        modelContext.insert(entity)
+        try modelContext.save()
+    }
 
-        return WorkClient(
-            fetchWorks: {
-                let descriptor = FetchDescriptor<WorkEntity>()
-                let entities = try container.mainContext.fetch(descriptor)
-                return entities.toDomain()
-            },
-            createWork: { work in
-                let entity = WorkEntity(from: work)
-                container.mainContext.insert(entity)
-                try container.mainContext.save()
-            },
-            updateWork: { work in
-                let entity = WorkEntity(from: work)
-                container.mainContext.insert(entity)
-                try container.mainContext.save()
-            },
-            deleteWork: { id in
-                var descriptor = FetchDescriptor<WorkEntity>()
-                descriptor.predicate = #Predicate { $0.id == id }
-                try container.mainContext.delete(model: WorkEntity.self, where: #Predicate { $0.id == id })
-                try container.mainContext.save()
+    public func update(_ work: Work) throws {
+        let workID = work.id
+        let descriptor = FetchDescriptor<WorkEntity>(
+            predicate: #Predicate<WorkEntity> { entity in
+                entity.id == workID
             }
         )
-    }()
+
+        guard let entity = try modelContext.fetch(descriptor).first else {
+            throw WorkClientError.workNotFound
+        }
+
+        WorkMapper.apply(work, to: entity)
+        try modelContext.save()
+    }
+
+    public func delete(id: UUID) throws {
+        let descriptor = FetchDescriptor<WorkEntity>(
+            predicate: #Predicate<WorkEntity> { entity in
+                entity.id == id
+            }
+        )
+
+        guard let entity = try modelContext.fetch(descriptor).first else {
+            throw WorkClientError.workNotFound
+        }
+
+        modelContext.delete(entity)
+        try modelContext.save()
+    }
 }
 ```
 
 ### チェックリスト
 - [ ] Entity に `@Model` と `@Attribute` を正しく指定
-- [ ] `toDomain()` メソッド実装
-- [ ] 初期化メソッド `init(from:)` 実装
-- [ ] Client のすべてのメソッドを実装
-- [ ] DependencyKey に準拠
-- [ ] Live Implementation を提供
+- [ ] `WorkMapper.toDomain(_:)` / `WorkMapper.toEntity(_:)` / `WorkMapper.apply(_:to:)` を実装
+- [ ] `WorkRepository` プロトコルに準拠（`fetchAll()` / `create(_:)` / `update(_:)` / `delete(id:)` を実装）
+- [ ] `WorkClientError` のエラーケースを定義
 
 ---
 
