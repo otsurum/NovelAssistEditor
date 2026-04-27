@@ -480,7 +480,16 @@ public struct WorkListView: View {
                         }
                     }
                 }
-                .sheet(isPresented: .constant(store.isShowingCreateModal)) {
+                .sheet(
+                    isPresented: Binding(
+                        get: { store.isShowingCreateModal },
+                        set: { isPresented in
+                            if !isPresented {
+                                store.send(.hideCreateModal)
+                            }
+                        }
+                    )
+                ) {
                     CreateWorkModal(store: store)
                         .presentationDetents([.medium, .large])
                 }
