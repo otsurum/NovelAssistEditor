@@ -58,13 +58,45 @@ public final class WorkClient: WorkRepository {
     }
 }
 
+extension WorkClient {
+    @MainActor private static var sharedContainer: ModelContainer?
+
+    /// AppFeature など SwiftData に直接依存させたくない層から使う共有ファクトリ
+    @MainActor
+    public static func sharedLive() throws -> WorkClient {
+        if let container = sharedContainer {
+            return WorkClient(modelContext: container.mainContext)
+        }
+        let container = try ModelContainerFactory.makeShared()
+        sharedContainer = container
+        return WorkClient(modelContext: container.mainContext)
+    }
+}
+
 public enum WorkClientError: LocalizedError {
     case workNotFound
+    case databaseAccessFailed(String)
+    case invalidData(String)
 
     public var errorDescription: String? {
         switch self {
         case .workNotFound:
             "対象の作品が見つかりません。"
+        case .databaseAccessFailed:
+            "データベースへのアクセスに失敗しました。"
+        case .invalidData:
+            "データの読み込みに失敗しました。"
+        }
+    }
+
+    public var debugDescription: String {
+        switch self {
+        case .workNotFound:
+            "WorkClientError.workNotFound"
+        case let .databaseAccessFailed(reason):
+            "WorkClientError.databaseAccessFailed: \(reason)"
+        case let .invalidData(reason):
+            "WorkClientError.invalidData: \(reason)"
         }
     }
 }

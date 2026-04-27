@@ -10,57 +10,33 @@ public struct WorkListView: View {
 
     public var body: some View {
         NavigationStack {
-            Group {
-                if store.isLoading {
-                    ProgressView()
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                } else if store.works.isEmpty {
-                    ContentUnavailableView(
-                        "作品がありません",
-                        systemImage: "book.closed",
-                        description: Text("まずは作品を1つ作成してください。")
-                    )
-                } else {
-                    List(store.works) { work in
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text(work.title)
-                                .font(.headline)
-
-                            if let summary = work.summary, !summary.isEmpty {
-                                Text(summary)
-                                    .font(.subheadline)
-                                    .foregroundStyle(.secondary)
-                                    .lineLimit(2)
+            WorkList(store: store)
+                .navigationTitle("作品")
+                .onAppear {
+                    store.send(.onAppear)
+                }
+                .toolbar {
+                    ToolbarItem(placement: .primaryAction) {
+                        Button {
+                            store.send(.showCreateModal)
+                        } label: {
+                            Label("新規作成", systemImage: "plus")
+                        }
+                    }
+                }
+                .sheet(
+                    isPresented: Binding(
+                        get: { store.isShowingCreateModal },
+                        set: { isPresented in
+                            if !isPresented {
+                                store.send(.hideCreateModal)
                             }
                         }
-                        .padding(.vertical, 4)
-                    }
+                    )
+                ) {
+                    CreateWorkModal(store: store)
+                        .presentationDetents([.medium, .large])
                 }
-            }
-            .navigationTitle("作品")
-            .toolbar {
-                ToolbarItem(placement: .primaryAction) {
-                    Button {
-                        store.send(.addButtonTapped)
-                    } label: {
-                        Label("新規作成", systemImage: "plus")
-                    }
-                }
-
-                ToolbarItem(placement: .automatic) {
-                    Button {
-                        store.send(.retryButtonTapped)
-                    } label: {
-                        Label("再読み込み", systemImage: "arrow.clockwise")
-                    }
-                }
-            }
         }
-        .task {
-            await store.send(.task).finish()
-        }
-        .alert(
-            store: store.scope(state: \.$alert, action: \.alert)
-        )
     }
 }
