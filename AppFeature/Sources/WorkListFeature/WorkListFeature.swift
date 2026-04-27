@@ -29,7 +29,7 @@ public struct WorkListFeature {
         case showCreateModal
         case hideCreateModal
         case createWork
-        case createWorkFailed(String)
+        case createWorkFailed(workID: UUID, message: String)
         case worksResponse(Result<[Work], FailureReason>)
         case updateFormTitle(String)
         case updateFormSummary(String)
@@ -97,12 +97,12 @@ public struct WorkListFeature {
                 state.createModalForm = CreateModalFormState()
                 state.errorMessage = nil
 
-                return .run { [workListClient] send in
+                return .run { [workListClient, workID = work.id] send in
                     do {
                         try await workListClient.create(work)
                     } catch {
                         // エラーが発生した場合、作品を削除してエラーメッセージを表示
-                        await send(.createWorkFailed(error.localizedDescription))
+                        await send(.createWorkFailed(workID: workID, message: error.localizedDescription))
                     }
                 }
 
@@ -122,11 +122,9 @@ public struct WorkListFeature {
                 state.createModalForm.theme = theme
                 return .none
 
-            case let .createWorkFailed(errorMessage):
-                // エラーが発生した場合、最後に追加した作品を削除
-                if !state.works.isEmpty {
-                    state.works.removeLast()
-                }
+            case let .createWorkFailed(workID, errorMessage):
+                // エラーが発生した場合、追加した作品をIDで特定して削除
+                state.works.removeAll(where: { $0.id == workID })
                 state.errorMessage = errorMessage
                 return .none
             }
