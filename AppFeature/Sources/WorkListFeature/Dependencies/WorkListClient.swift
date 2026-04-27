@@ -20,13 +20,13 @@ extension WorkListClient: DependencyKey {
             } catch let error as WorkClientError {
                 // WorkClient 固有エラー
                 #if DEBUG
-                print("❌ WorkClient error: \(error.localizedDescription)")
+                    print("❌ WorkClient error: \(error.localizedDescription)")
                 #endif
                 throw error
             } catch {
                 // その他のエラー（DBアクセス失敗など）
                 #if DEBUG
-                print("❌ Unexpected error during fetch: \(error.localizedDescription)")
+                    print("❌ Unexpected error during fetch: \(error.localizedDescription)")
                 #endif
                 throw WorkClientError.databaseAccessFailed(error.localizedDescription)
             }
@@ -37,13 +37,13 @@ extension WorkListClient: DependencyKey {
             } catch let error as WorkClientError {
                 // WorkClient 固有エラー
                 #if DEBUG
-                print("❌ WorkClient error: \(error.localizedDescription)")
+                    print("❌ WorkClient error: \(error.localizedDescription)")
                 #endif
                 throw error
             } catch {
                 // その他のエラー（DBアクセス失敗など）
                 #if DEBUG
-                print("❌ Unexpected error during create: \(error.localizedDescription)")
+                    print("❌ Unexpected error during create: \(error.localizedDescription)")
                 #endif
                 throw WorkClientError.databaseAccessFailed(error.localizedDescription)
             }
