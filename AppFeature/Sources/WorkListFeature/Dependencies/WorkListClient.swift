@@ -2,7 +2,6 @@ import AppCore
 import ComposableArchitecture
 import Foundation
 import Persistance
-import SwiftData
 
 /// Persistance から WorkClientError と WorkClient をインポート
 typealias WorkClientError = Persistance.WorkClientError
@@ -20,11 +19,15 @@ extension WorkListClient: DependencyKey {
                 return try await fetchWorksOnMainActor()
             } catch let error as WorkClientError {
                 // WorkClient 固有エラー
+                #if DEBUG
                 print("❌ WorkClient error: \(error.localizedDescription)")
+                #endif
                 throw error
             } catch {
                 // その他のエラー（DBアクセス失敗など）
+                #if DEBUG
                 print("❌ Unexpected error during fetch: \(error.localizedDescription)")
+                #endif
                 throw WorkClientError.databaseAccessFailed(error.localizedDescription)
             }
         },
@@ -33,11 +36,15 @@ extension WorkListClient: DependencyKey {
                 try await createWorkOnMainActor(work)
             } catch let error as WorkClientError {
                 // WorkClient 固有エラー
+                #if DEBUG
                 print("❌ WorkClient error: \(error.localizedDescription)")
+                #endif
                 throw error
             } catch {
                 // その他のエラー（DBアクセス失敗など）
+                #if DEBUG
                 print("❌ Unexpected error during create: \(error.localizedDescription)")
+                #endif
                 throw WorkClientError.databaseAccessFailed(error.localizedDescription)
             }
         }
@@ -54,15 +61,13 @@ extension WorkListClient: DependencyKey {
 
     @MainActor
     private static func fetchWorksOnMainActor() async throws -> [Work] {
-        let container = try ModelContainerFactory.makeShared()
-        let workClient = WorkClient(modelContext: container.mainContext)
+        let workClient = try WorkClient.sharedLive()
         return try workClient.fetchAll()
     }
 
     @MainActor
     private static func createWorkOnMainActor(_ work: Work) async throws {
-        let container = try ModelContainerFactory.makeShared()
-        let workClient = WorkClient(modelContext: container.mainContext)
+        let workClient = try WorkClient.sharedLive()
         try workClient.create(work)
     }
 }
