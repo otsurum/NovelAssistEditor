@@ -29,7 +29,7 @@ public struct WorkListFeature {
         case showCreateModal
         case hideCreateModal
         case createWork
-        case createWorkFailed(workID: UUID, message: String)
+        case createWorkFailed(message: String)
         case worksResponse(Result<[Work], FailureReason>)
         case updateFormTitle(String)
         case updateFormSummary(String)
@@ -94,17 +94,18 @@ public struct WorkListFeature {
                     styleMemo: state.createModalForm.styleMemo.isEmpty ? nil : state.createModalForm.styleMemo,
                     theme: state.createModalForm.theme.isEmpty ? nil : state.createModalForm.theme
                 )
-                state.works.append(work)
                 state.isShowingCreateModal = false
                 state.createModalForm = CreateModalFormState()
                 state.errorMessage = nil
 
-                return .run { [workListClient, workID = work.id] send in
+                return .run { [workListClient] send in
                     do {
                         try await workListClient.create(work)
+                        // 永続化成功後にリストを再取得して state を更新
+                        let works = try await workListClient.fetchWorks()
+                        await send(.worksResponse(.success(works)))
                     } catch {
-                        // エラーが発生した場合、作品を削除してエラーメッセージを表示
-                        await send(.createWorkFailed(workID: workID, message: error.localizedDescription))
+                        await send(.createWorkFailed(message: error.localizedDescription))
                     }
                 }
 
@@ -124,9 +125,7 @@ public struct WorkListFeature {
                 state.createModalForm.theme = theme
                 return .none
 
-            case let .createWorkFailed(workID, errorMessage):
-                // エラーが発生した場合、追加した作品をIDで特定して削除
-                state.works.removeAll(where: { $0.id == workID })
+            case let .createWorkFailed(errorMessage):
                 state.errorMessage = errorMessage
                 return .none
             }
