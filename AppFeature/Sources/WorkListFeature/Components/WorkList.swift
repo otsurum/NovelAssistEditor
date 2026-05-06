@@ -11,77 +11,135 @@ import SwiftUI
 
 public struct WorkList: View {
     let store: StoreOf<WorkListFeature>
+    @State private var searchText = ""
 
     public init(store: StoreOf<WorkListFeature>) {
         self.store = store
     }
 
     public var body: some View {
-        Group {
-            if store.isLoading {
-                ProgressView()
+        VStack(spacing: 0) {
+            SidebarHeader(workCount: store.works.count)
+
+            Divider()
+
+            Group {
+                if store.isLoading {
+                    ProgressView()
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                } else if filteredWorks.isEmpty {
+                    ContentUnavailableView(
+                        emptyTitle,
+                        systemImage: "book.closed",
+                        description: Text(emptyDescription)
+                    )
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
-            } else if store.works.isEmpty {
-                ContentUnavailableView(
-                    "作品がありません",
-                    systemImage: "book.closed",
-                    description: Text("まずは作品を1つ作成してください。")
-                )
-            } else {
-                ScrollView {
-                    VStack(spacing: 12) {
-                        ForEach(store.works) { work in
-                            WorkCard(work: work)
+                } else {
+                    List(selection: selection) {
+                        ForEach(filteredWorks) { work in
+                            WorkSidebarRow(work: work)
+                                .tag(work.id)
                         }
                     }
-                    .padding()
+                    .listStyle(.sidebar)
+                    .scrollContentBackground(.hidden)
                 }
             }
         }
+        .searchable(text: $searchText, placement: .sidebar, prompt: "検索")
+    }
+
+    private var selection: Binding<Work.ID?> {
+        Binding(
+            get: { store.selectedWorkID },
+            set: { store.send(.workSelected($0)) }
+        )
+    }
+
+    private var filteredWorks: [Work] {
+        let query = searchText.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !query.isEmpty else { return store.works }
+
+        return store.works.filter { work in
+            [
+                work.title,
+                work.summary,
+                work.styleMemo,
+                work.theme,
+            ]
+            .compactMap(\.self)
+            .contains { $0.localizedCaseInsensitiveContains(query) }
+        }
+    }
+
+    private var emptyTitle: String {
+        searchText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+            ? "作品がありません"
+            : "一致する作品がありません"
+    }
+
+    private var emptyDescription: String {
+        searchText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+            ? "まずは作品を1つ作成してください。"
+            : "別のキーワードで検索してください。"
     }
 }
 
-struct WorkCard: View {
-    let work: Work
+private struct SidebarHeader: View {
+    let workCount: Int
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text(work.title)
+        VStack(alignment: .leading, spacing: 2) {
+            Text("すべての作品")
                 .font(.headline)
                 .lineLimit(1)
 
-            if let summary = work.summary, !summary.isEmpty {
-                Text(summary)
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-                    .lineLimit(2)
-            }
+            Text("\(workCount)件の作品")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.horizontal, 16)
+        .padding(.vertical, 12)
+    }
+}
 
-            HStack(spacing: 12) {
+private struct WorkSidebarRow: View {
+    let work: Work
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 5) {
+            Text(work.title)
+                .font(.body.weight(.semibold))
+                .lineLimit(1)
+
+            HStack(spacing: 6) {
+                Text(work.updatedAt.formatted(date: .numeric, time: .omitted))
+                    .fontWeight(.medium)
+
+                if let summary = work.summary, !summary.isEmpty {
+                    Text(summary)
+                        .lineLimit(1)
+                }
+            }
+            .font(.caption)
+            .foregroundStyle(.secondary)
+
+            HStack(spacing: 8) {
                 if let styleMemo = work.styleMemo, !styleMemo.isEmpty {
-                    Label(styleMemo, systemImage: "pencil.circle.fill")
-                        .font(.caption)
-                        .foregroundStyle(.blue)
+                    Label(styleMemo, systemImage: "pencil")
                         .lineLimit(1)
                 }
 
                 if let theme = work.theme, !theme.isEmpty {
-                    Label(theme, systemImage: "lightbulb.fill")
-                        .font(.caption)
-                        .foregroundStyle(.orange)
+                    Label(theme, systemImage: "lightbulb")
                         .lineLimit(1)
                 }
-
-                Spacer()
-
-                Text(work.updatedAt.formatted(date: .abbreviated, time: .omitted))
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
             }
+            .font(.caption2)
+            .foregroundStyle(.tertiary)
         }
-        .padding()
-        .background(Color(.systemBrown))
-        .cornerRadius(8)
-        .shadow(radius: 2)
+        .padding(.vertical, 6)
+        .contentShape(Rectangle())
     }
 }
