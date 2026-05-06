@@ -19,40 +19,41 @@ public struct WorkList: View {
 
     public var body: some View {
         VStack(spacing: 0) {
-            SidebarHeader(workCount: store.works.count)
-
-            Divider()
-
-            Group {
-                if store.isLoading {
-                    ProgressView()
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                } else if filteredWorks.isEmpty {
-                    ContentUnavailableView(
-                        emptyTitle,
-                        systemImage: "book.closed",
-                        description: Text(emptyDescription)
-                    )
+            if store.isLoading {
+                ProgressView()
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
-                } else {
-                    List(selection: selection) {
-                        ForEach(filteredWorks) { work in
-                            WorkSidebarRow(work: work)
-                                .tag(work.id)
+            } else {
+                List(selection: selection) {
+                    AllWorksSidebarRow(workCount: store.works.count)
+                        .tag(WorkListFeature.SidebarSelection.allWorks)
+
+                    Section {
+                        if filteredWorks.isEmpty {
+                            Text(emptyTitle)
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                                .padding(.vertical, 6)
+                        } else {
+                            ForEach(filteredWorks) { work in
+                                WorkSidebarRow(work: work)
+                                    .tag(WorkListFeature.SidebarSelection.work(work.id))
+                            }
                         }
+                    } header: {
+                        Text("作品")
                     }
-                    .listStyle(.sidebar)
-                    .scrollContentBackground(.hidden)
                 }
+                .listStyle(.sidebar)
+                .scrollContentBackground(.hidden)
             }
         }
         .searchable(text: $searchText, placement: .sidebar, prompt: "検索")
     }
 
-    private var selection: Binding<Work.ID?> {
+    private var selection: Binding<WorkListFeature.SidebarSelection?> {
         Binding(
-            get: { store.selectedWorkID },
-            set: { store.send(.workSelected($0)) }
+            get: { store.selectedSidebarItem },
+            set: { store.send(.sidebarSelectionChanged($0)) }
         )
     }
 
@@ -77,30 +78,23 @@ public struct WorkList: View {
             ? "作品がありません"
             : "一致する作品がありません"
     }
-
-    private var emptyDescription: String {
-        searchText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
-            ? "まずは作品を1つ作成してください。"
-            : "別のキーワードで検索してください。"
-    }
 }
 
-private struct SidebarHeader: View {
+private struct AllWorksSidebarRow: View {
     let workCount: Int
 
     var body: some View {
         VStack(alignment: .leading, spacing: 2) {
             Text("すべての作品")
-                .font(.headline)
+                .font(.body.weight(.semibold))
                 .lineLimit(1)
 
             Text("\(workCount)件の作品")
                 .font(.caption)
                 .foregroundStyle(.secondary)
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.horizontal, 16)
-        .padding(.vertical, 12)
+        .padding(.vertical, 6)
+        .contentShape(Rectangle())
     }
 }
 

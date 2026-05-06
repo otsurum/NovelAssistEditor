@@ -5,6 +5,11 @@ import WorkDetailFeature
 
 @Reducer
 public struct WorkListFeature {
+    public enum SidebarSelection: Hashable, Equatable {
+        case allWorks
+        case work(Work.ID)
+    }
+
     @ObservableState
     public struct State: Equatable {
         public var works: [Work] = []
@@ -12,7 +17,7 @@ public struct WorkListFeature {
         public var isShowingCreateModal = false
         public var createModalForm = CreateModalFormState()
         public var errorMessage: String?
-        public var selectedWorkID: Work.ID?
+        public var selectedSidebarItem: SidebarSelection = .allWorks
         public var detail: WorkDetailFeature.State?
 
         public init() {}
@@ -35,7 +40,7 @@ public struct WorkListFeature {
         case createWork
         case createWorkFailed(message: String)
         case workTapped(Work)
-        case workSelected(Work.ID?)
+        case sidebarSelectionChanged(SidebarSelection?)
         case worksResponse(Result<[Work], FailureReason>)
         case updateFormTitle(String)
         case updateFormSummary(String)
@@ -105,8 +110,8 @@ public struct WorkListFeature {
                 state.select(work)
                 return .none
 
-            case let .workSelected(workID):
-                state.selectWork(id: workID)
+            case let .sidebarSelectionChanged(selection):
+                state.select(selection ?? .allWorks)
                 return .none
 
             case .createWork:
@@ -160,37 +165,51 @@ public struct WorkListFeature {
 
 private extension WorkListFeature.State {
     mutating func select(_ work: Work?) {
-        selectedWorkID = work?.id
-        detail = work.map(WorkDetailFeature.State.init(work:))
-    }
-
-    mutating func selectWork(id: Work.ID?) {
-        guard let id, let work = works.first(where: { $0.id == id }) else {
-            select(nil)
+        guard let work else {
+            select(.allWorks)
             return
         }
 
-        select(work)
+        selectedSidebarItem = .work(work.id)
+        detail = WorkDetailFeature.State(work: work)
+    }
+
+    mutating func select(_ selection: WorkListFeature.SidebarSelection) {
+        switch selection {
+        case .allWorks:
+            selectedSidebarItem = .allWorks
+            detail = nil
+
+        case let .work(id):
+            guard let work = works.first(where: { $0.id == id }) else {
+                selectedSidebarItem = .allWorks
+                detail = nil
+                return
+            }
+
+            selectedSidebarItem = .work(id)
+            detail = WorkDetailFeature.State(work: work)
+        }
     }
 
     mutating func reconcileSelection() {
-        let nextSelectionID = selectedWorkID.flatMap { selectedID in
-            works.contains(where: { $0.id == selectedID }) ? selectedID : nil
-        } ?? works.first?.id
-
-        guard let nextSelectionID,
-              let selectedWork = works.first(where: { $0.id == nextSelectionID })
-        else {
-            select(nil)
+        switch selectedSidebarItem {
+        case .allWorks:
+            detail = nil
             return
-        }
 
-        selectedWorkID = nextSelectionID
-        if detail?.isEditing == true, detail?.work.id == selectedWork.id {
-            return
-        }
+        case let .work(id):
+            guard let selectedWork = works.first(where: { $0.id == id }) else {
+                select(.allWorks)
+                return
+            }
 
-        detail = WorkDetailFeature.State(work: selectedWork)
+            if detail?.isEditing == true, detail?.work.id == selectedWork.id {
+                return
+            }
+
+            detail = WorkDetailFeature.State(work: selectedWork)
+        }
     }
 
     mutating func updateWorkInList(_ updatedWork: Work) {
