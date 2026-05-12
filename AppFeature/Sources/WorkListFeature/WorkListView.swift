@@ -60,12 +60,6 @@ public struct WorkListView: View {
                 .presentationDetents([.medium, .large])
         }
     }
-
-    private func toggleSidebar() {
-        withAnimation(.easeInOut(duration: 0.2)) {
-            columnVisibility = columnVisibility == .detailOnly ? .all : .detailOnly
-        }
-    }
 }
 
 private struct AllWorksOverviewView: View {
