@@ -5,7 +5,7 @@ import WorkDetailFeature
 
 @Reducer
 public struct WorkListFeature {
-    public enum SidebarSelection: Hashable, Equatable {
+    public enum SidebarSelection: Hashable {
         case allWorks
         case work(Work.ID)
     }
