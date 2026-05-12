@@ -1,6 +1,5 @@
 import AppCore
 import ComposableArchitecture
-import Foundation
 import Persistance
 
 public struct WorkDetailClient: Sendable {
