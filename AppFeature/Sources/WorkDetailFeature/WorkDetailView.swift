@@ -3,7 +3,7 @@ import ComposableArchitecture
 import SwiftUI
 
 #if os(macOS)
-import AppKit
+    import AppKit
 #endif
 
 public struct WorkDetailView: View {
@@ -257,8 +257,7 @@ private struct ErrorBanner: View {
 
 private extension View {
     func workEditorStyle(minHeight: CGFloat = 88) -> some View {
-        self
-            .scrollContentBackground(.hidden)
+        scrollContentBackground(.hidden)
             .frame(minHeight: minHeight)
             .padding(8)
             .background {
@@ -275,25 +274,25 @@ private extension View {
 private extension Color {
     static var workDetailBackground: Color {
         #if os(macOS)
-        Color(nsColor: .textBackgroundColor)
+            Color(nsColor: .textBackgroundColor)
         #else
-        Color(.systemBackground)
+            Color(.systemBackground)
         #endif
     }
 
     static var workEditorBackground: Color {
         #if os(macOS)
-        Color(nsColor: .controlBackgroundColor)
+            Color(nsColor: .controlBackgroundColor)
         #else
-        Color(.secondarySystemBackground)
+            Color(.secondarySystemBackground)
         #endif
     }
 
     static var workEditorBorder: Color {
         #if os(macOS)
-        Color(nsColor: .separatorColor).opacity(0.7)
+            Color(nsColor: .separatorColor).opacity(0.7)
         #else
-        Color(.separator).opacity(0.7)
+            Color(.separator).opacity(0.7)
         #endif
     }
 }

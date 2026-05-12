@@ -1,8 +1,7 @@
-import ComposableArchitecture
-import XCTest
-
 @testable import AppCore
+import ComposableArchitecture
 @testable import WorkDetailFeature
+import XCTest
 
 final class WorkDetailFeatureTests: XCTestCase {
     @MainActor
@@ -56,7 +55,7 @@ final class WorkDetailFeatureTests: XCTestCase {
     }
 
     @MainActor
-    func testFormValidation() async {
+    func testFormValidation() {
         let work = Work(title: "Test")
         var state = WorkDetailFeature.State(work: work)
         state.editFormState.title = ""

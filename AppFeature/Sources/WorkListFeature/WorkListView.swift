@@ -4,7 +4,7 @@ import SwiftUI
 import WorkDetailFeature
 
 #if os(macOS)
-import AppKit
+    import AppKit
 #endif
 
 public struct WorkListView: View {
@@ -73,7 +73,7 @@ private struct AllWorksOverviewView: View {
     let onSelect: (Work) -> Void
 
     private let columns = [
-        GridItem(.adaptive(minimum: 180, maximum: 220), spacing: 24, alignment: .top)
+        GridItem(.adaptive(minimum: 180, maximum: 220), spacing: 24, alignment: .top),
     ]
 
     var body: some View {
@@ -158,7 +158,7 @@ private struct WorkOverviewCard: View {
                 .font(.caption)
                 .foregroundStyle(.secondary)
                 .lineLimit(1)
-            .frame(width: 180)
+                .frame(width: 180)
         }
         .frame(width: 180, alignment: .top)
         .contentShape(Rectangle())
@@ -189,17 +189,17 @@ private struct EmptyWorkDetailView: View {
 private extension Color {
     static var workOverviewBackground: Color {
         #if os(macOS)
-        Color(nsColor: .textBackgroundColor)
+            Color(nsColor: .textBackgroundColor)
         #else
-        Color(.systemBackground)
+            Color(.systemBackground)
         #endif
     }
 
     static var workOverviewPreviewBackground: Color {
         #if os(macOS)
-        Color(nsColor: .controlBackgroundColor)
+            Color(nsColor: .controlBackgroundColor)
         #else
-        Color(.secondarySystemBackground)
+            Color(.secondarySystemBackground)
         #endif
     }
 }

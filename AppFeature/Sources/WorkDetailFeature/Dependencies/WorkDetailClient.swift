@@ -12,19 +12,15 @@ public struct WorkDetailClient: Sendable {
 }
 
 extension WorkDetailClient: DependencyKey {
-    public static let liveValue: WorkDetailClient = {
-        return WorkDetailClient(
-            update: { work in
-                try await updateWorkOnMainActor(work)
-            }
-        )
-    }()
+    public static let liveValue: WorkDetailClient = .init(
+        update: { work in
+            try await updateWorkOnMainActor(work)
+        }
+    )
 
-    public static let testValue: WorkDetailClient = {
-        WorkDetailClient(
-            update: { _ in }
-        )
-    }()
+    public static let testValue: WorkDetailClient = .init(
+        update: { _ in }
+    )
 
     @MainActor
     private static func updateWorkOnMainActor(_ work: Work) throws {
@@ -33,8 +29,8 @@ extension WorkDetailClient: DependencyKey {
     }
 }
 
-extension DependencyValues {
-    public var workDetailClient: WorkDetailClient {
+public extension DependencyValues {
+    var workDetailClient: WorkDetailClient {
         get { self[WorkDetailClient.self] }
         set { self[WorkDetailClient.self] = newValue }
     }

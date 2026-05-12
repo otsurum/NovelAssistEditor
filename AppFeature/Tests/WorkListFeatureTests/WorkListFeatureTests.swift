@@ -2,9 +2,8 @@ import AppCore
 import ComposableArchitecture
 import Foundation
 import WorkDetailFeature
-import XCTest
-
 @testable import WorkListFeature
+import XCTest
 
 final class WorkListFeatureTests: XCTestCase {
     @MainActor
@@ -25,9 +24,9 @@ final class WorkListFeatureTests: XCTestCase {
     }
 
     @MainActor
-    func testWorkTappedSelectsDetail() async {
-        let work = Work(
-            id: UUID(uuidString: "00000000-0000-0000-0000-000000000001")!,
+    func testWorkTappedSelectsDetail() async throws {
+        let work = try Work(
+            id: XCTUnwrap(UUID(uuidString: "00000000-0000-0000-0000-000000000001")),
             title: "Test Work",
             summary: "Test Summary"
         )
@@ -44,9 +43,9 @@ final class WorkListFeatureTests: XCTestCase {
     }
 
     @MainActor
-    func testAllWorksSelectionClearsDetail() async {
-        let work = Work(
-            id: UUID(uuidString: "00000000-0000-0000-0000-000000000001")!,
+    func testAllWorksSelectionClearsDetail() async throws {
+        let work = try Work(
+            id: XCTUnwrap(UUID(uuidString: "00000000-0000-0000-0000-000000000001")),
             title: "Test Work"
         )
 

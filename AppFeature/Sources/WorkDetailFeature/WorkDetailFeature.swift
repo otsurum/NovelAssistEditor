@@ -13,7 +13,7 @@ public struct WorkDetailFeature {
 
         public init(work: Work) {
             self.work = work
-            self.editFormState = EditFormState(
+            editFormState = EditFormState(
                 title: work.title,
                 summary: work.summary ?? "",
                 styleMemo: work.styleMemo ?? "",
