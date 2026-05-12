@@ -8,6 +8,23 @@ import XCTest
 
 final class WorkListFeatureTests: XCTestCase {
     @MainActor
+    func testShowAndHideCreateModal() async {
+        let store = TestStore(
+            initialState: WorkListFeature.State(),
+            reducer: { WorkListFeature() }
+        )
+
+        await store.send(.showCreateModal) {
+            $0.isShowingCreateModal = true
+        }
+
+        await store.send(.hideCreateModal) {
+            $0.isShowingCreateModal = false
+            $0.createModalForm = WorkListFeature.CreateModalFormState()
+        }
+    }
+
+    @MainActor
     func testWorkTappedSelectsDetail() async {
         let work = Work(
             id: UUID(uuidString: "00000000-0000-0000-0000-000000000001")!,
