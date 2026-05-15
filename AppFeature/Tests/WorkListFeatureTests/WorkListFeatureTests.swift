@@ -52,6 +52,7 @@ final class WorkListFeatureTests: XCTestCase {
         var state = WorkListFeature.State()
         state.works = [work]
         state.selectedSidebarItem = .work(work.id)
+        state.selectedWorkContent = .characters
         state.detail = WorkDetailFeature.State(work: work)
 
         let store = TestStore(
@@ -61,7 +62,53 @@ final class WorkListFeatureTests: XCTestCase {
 
         await store.send(.sidebarSelectionChanged(.allWorks)) {
             $0.selectedSidebarItem = .allWorks
+            $0.selectedWorkContent = .general
             $0.detail = nil
+        }
+    }
+
+    @MainActor
+    func testCharactersContentSelectionKeepsDetail() async throws {
+        let work = try Work(
+            id: XCTUnwrap(UUID(uuidString: "00000000-0000-0000-0000-000000000001")),
+            title: "Test Work"
+        )
+
+        var state = WorkListFeature.State()
+        state.works = [work]
+        state.selectedSidebarItem = .work(work.id)
+        state.detail = WorkDetailFeature.State(work: work)
+
+        let store = TestStore(
+            initialState: state,
+            reducer: { WorkListFeature() }
+        )
+
+        await store.send(.workContentSelectionChanged(.characters)) {
+            $0.selectedWorkContent = .characters
+        }
+    }
+
+    @MainActor
+    func testWorkSelectionResetsContentSelectionToGeneral() async throws {
+        let work = try Work(
+            id: XCTUnwrap(UUID(uuidString: "00000000-0000-0000-0000-000000000001")),
+            title: "Test Work"
+        )
+
+        var state = WorkListFeature.State()
+        state.works = [work]
+        state.selectedWorkContent = .characters
+
+        let store = TestStore(
+            initialState: state,
+            reducer: { WorkListFeature() }
+        )
+
+        await store.send(.sidebarSelectionChanged(.work(work.id))) {
+            $0.selectedSidebarItem = .work(work.id)
+            $0.selectedWorkContent = .general
+            $0.detail = WorkDetailFeature.State(work: work)
         }
     }
 }

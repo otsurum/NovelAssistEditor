@@ -1,4 +1,5 @@
 import AppCore
+import CharacterCardListFeature
 import ComposableArchitecture
 import SwiftUI
 import WorkDetailFeature
@@ -23,7 +24,7 @@ public struct WorkListView: View {
         } detail: {
             Group {
                 if let detailStore = store.scope(state: \.detail, action: \.detail) {
-                    WorkDetailView(store: detailStore)
+                    SelectedWorkContentView(store: store, detailStore: detailStore)
                 } else if store.selectedSidebarItem == .allWorks {
                     AllWorksOverviewView(works: store.works) { work in
                         store.send(.workTapped(work))
@@ -59,6 +60,98 @@ public struct WorkListView: View {
             CreateWorkModal(store: store)
                 .presentationDetents([.medium, .large])
         }
+    }
+}
+
+private struct SelectedWorkContentView: View {
+    @Bindable var store: StoreOf<WorkListFeature>
+    let detailStore: StoreOf<WorkDetailFeature>
+
+    var body: some View {
+        HStack(spacing: 0) {
+            WorkContentSidebar(store: store, work: detailStore.work)
+                .frame(width: 188)
+
+            Divider()
+
+            Group {
+                switch store.selectedWorkContent {
+                case .general:
+                    WorkDetailView(store: detailStore)
+
+                case .characters:
+                    CharacterCardListView(characters: detailStore.work.characters)
+                }
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+        }
+    }
+}
+
+private struct WorkContentSidebar: View {
+    @Bindable var store: StoreOf<WorkListFeature>
+    let work: Work
+
+    var body: some View {
+        VStack(spacing: 0) {
+            List(selection: selection) {
+                Section {
+                    WorkContentSidebarRow(
+                        title: "一般",
+                        subtitle: work.updatedAt.formatted(date: .numeric, time: .omitted),
+                        systemImage: "doc.text"
+                    )
+                    .tag(WorkListFeature.WorkContentSelection.general)
+
+                    WorkContentSidebarRow(
+                        title: "キャラクター",
+                        subtitle: "\(work.characters.count)件",
+                        systemImage: "person.2"
+                    )
+                    .tag(WorkListFeature.WorkContentSelection.characters)
+                } header: {
+                    Text(work.title)
+                }
+            }
+            .listStyle(.sidebar)
+            .scrollContentBackground(.hidden)
+        }
+        .background(Color.workContentSidebarBackground)
+    }
+
+    private var selection: Binding<WorkListFeature.WorkContentSelection?> {
+        Binding(
+            get: { store.selectedWorkContent },
+            set: { store.send(.workContentSelectionChanged($0)) }
+        )
+    }
+}
+
+private struct WorkContentSidebarRow: View {
+    let title: String
+    let subtitle: String
+    let systemImage: String
+
+    var body: some View {
+        HStack(spacing: 10) {
+            Image(systemName: systemImage)
+                .font(.body)
+                .foregroundStyle(.secondary)
+                .frame(width: 18)
+
+            VStack(alignment: .leading, spacing: 3) {
+                Text(title)
+                    .font(.body.weight(.semibold))
+                    .lineLimit(1)
+
+                Text(subtitle)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .lineLimit(1)
+            }
+        }
+        .padding(.vertical, 6)
+        .contentShape(Rectangle())
     }
 }
 
@@ -192,6 +285,14 @@ private extension Color {
     static var workOverviewPreviewBackground: Color {
         #if os(macOS)
             Color(nsColor: .controlBackgroundColor)
+        #else
+            Color(.secondarySystemBackground)
+        #endif
+    }
+
+    static var workContentSidebarBackground: Color {
+        #if os(macOS)
+            Color(nsColor: .underPageBackgroundColor)
         #else
             Color(.secondarySystemBackground)
         #endif

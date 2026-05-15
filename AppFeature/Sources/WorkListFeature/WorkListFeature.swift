@@ -10,6 +10,11 @@ public struct WorkListFeature {
         case work(Work.ID)
     }
 
+    public enum WorkContentSelection: Hashable {
+        case general
+        case characters
+    }
+
     @ObservableState
     public struct State: Equatable {
         public var works: [Work] = []
@@ -18,6 +23,7 @@ public struct WorkListFeature {
         public var createModalForm = CreateModalFormState()
         public var errorMessage: String?
         public var selectedSidebarItem: SidebarSelection = .allWorks
+        public var selectedWorkContent: WorkContentSelection = .general
         public var detail: WorkDetailFeature.State?
 
         public init() {}
@@ -41,6 +47,7 @@ public struct WorkListFeature {
         case createWorkFailed(message: String)
         case workTapped(Work)
         case sidebarSelectionChanged(SidebarSelection?)
+        case workContentSelectionChanged(WorkContentSelection?)
         case worksResponse(Result<[Work], FailureReason>)
         case updateFormTitle(String)
         case updateFormSummary(String)
@@ -114,6 +121,10 @@ public struct WorkListFeature {
                 state.select(selection ?? .allWorks)
                 return .none
 
+            case let .workContentSelectionChanged(selection):
+                state.selectedWorkContent = selection ?? .general
+                return .none
+
             case .createWork:
                 let work = Work(
                     title: state.createModalForm.title,
@@ -171,6 +182,7 @@ private extension WorkListFeature.State {
         }
 
         selectedSidebarItem = .work(work.id)
+        selectedWorkContent = .general
         detail = WorkDetailFeature.State(work: work)
     }
 
@@ -178,16 +190,19 @@ private extension WorkListFeature.State {
         switch selection {
         case .allWorks:
             selectedSidebarItem = .allWorks
+            selectedWorkContent = .general
             detail = nil
 
         case let .work(id):
             guard let work = works.first(where: { $0.id == id }) else {
                 selectedSidebarItem = .allWorks
+                selectedWorkContent = .general
                 detail = nil
                 return
             }
 
             selectedSidebarItem = .work(id)
+            selectedWorkContent = .general
             detail = WorkDetailFeature.State(work: work)
         }
     }
@@ -195,6 +210,7 @@ private extension WorkListFeature.State {
     mutating func reconcileSelection() {
         switch selectedSidebarItem {
         case .allWorks:
+            selectedWorkContent = .general
             detail = nil
             return
 

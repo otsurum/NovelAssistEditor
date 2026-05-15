@@ -12,7 +12,7 @@ let package = Package(
         // Products define the executables and libraries a package produces, making them visible to other packages.
         .library(
             name: "AppFeature",
-            targets: ["AppFeature", "WorkListFeature", "WorkDetailFeature"]
+            targets: ["AppFeature", "WorkListFeature", "WorkDetailFeature", "CharacterDetailFeature", "CharacterCardListFeature"]
         ),
     ],
     dependencies: [
@@ -35,6 +35,7 @@ let package = Package(
             name: "WorkListFeature",
             dependencies: [
                 "AppCore",
+                "CharacterCardListFeature",
                 "Persistance",
                 "WorkDetailFeature",
                 .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
@@ -46,6 +47,19 @@ let package = Package(
                 "AppCore",
                 "Persistance",
                 .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
+            ]
+        ),
+        .target(
+            name: "CharacterDetailFeature",
+            dependencies: [
+                "AppCore",
+            ]
+        ),
+        .target(
+            name: "CharacterCardListFeature",
+            dependencies: [
+                "AppCore",
+                "CharacterDetailFeature",
             ]
         ),
         .testTarget(
