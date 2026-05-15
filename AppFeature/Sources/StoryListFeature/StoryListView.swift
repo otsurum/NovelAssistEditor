@@ -1,4 +1,5 @@
 import AppCore
+import ComposableArchitecture
 import SwiftUI
 
 #if os(macOS)
@@ -6,29 +7,15 @@ import SwiftUI
 #endif
 
 public struct StoryListView: View {
-    let work: Work
-    let onCharactersTapped: () -> Void
-    let onChapterTapped: (Chapter, Int) -> Void
-    let onCreateChapter: (Chapter) -> Void
+    @Bindable var store: StoreOf<StoryListFeature>
 
-    @State private var isShowingCreateModal = false
-    @State private var createForm = CreateChapterFormState()
-
-    public init(
-        work: Work,
-        onCharactersTapped: @escaping () -> Void = {},
-        onChapterTapped: @escaping (Chapter, Int) -> Void = { _, _ in },
-        onCreateChapter: @escaping (Chapter) -> Void = { _ in }
-    ) {
-        self.work = work
-        self.onCharactersTapped = onCharactersTapped
-        self.onChapterTapped = onChapterTapped
-        self.onCreateChapter = onCreateChapter
+    public init(store: StoreOf<StoryListFeature>) {
+        self.store = store
     }
 
     public var body: some View {
         Group {
-            if work.story.chapters.isEmpty {
+            if store.work.story.chapters.isEmpty {
                 VStack(spacing: 14) {
                     ContentUnavailableView(
                         "エピソードがありません",
@@ -37,7 +24,7 @@ public struct StoryListView: View {
                     )
 
                     Button {
-                        isShowingCreateModal = true
+                        store.send(.showCreateModal)
                     } label: {
                         Label("エピソードを追加", systemImage: "plus.circle")
                     }
@@ -46,13 +33,9 @@ public struct StoryListView: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
                 List {
-                    if !work.characters.isEmpty {
-                        CharactersRow(count: work.characters.count, onTap: onCharactersTapped)
-                    }
-
-                    ForEach(Array(work.story.chapters.enumerated()), id: \.element.id) { index, chapter in
+                    ForEach(Array(store.work.story.chapters.enumerated()), id: \.element.id) { index, chapter in
                         ChapterRow(number: index + 1, chapter: chapter) {
-                            onChapterTapped(chapter, index)
+                            store.send(.chapterTapped(chapter.id))
                         }
                     }
                 }
@@ -60,55 +43,29 @@ public struct StoryListView: View {
                 .scrollContentBackground(.hidden)
             }
         }
-        .navigationTitle(work.title)
+        .navigationTitle(store.work.title)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.storyListBackground)
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
                 Button {
-                    isShowingCreateModal = true
+                    store.send(.showCreateModal)
                 } label: {
                     Label("エピソードを追加", systemImage: "plus")
                 }
             }
         }
-        .sheet(isPresented: $isShowingCreateModal) {
-            CreateChapterModal(
-                form: $createForm,
-                onCancel: dismissModal,
-                onCreate: { chapter in
-                    onCreateChapter(chapter)
-                    dismissModal()
+        .sheet(
+            isPresented: Binding(
+                get: { store.isShowingCreateModal },
+                set: { isPresented in
+                    if !isPresented { store.send(.hideCreateModal) }
                 }
             )
-            .presentationDetents([.medium])
+        ) {
+            CreateChapterModal(store: store)
+                .presentationDetents([.medium])
         }
-    }
-
-    private func dismissModal() {
-        createForm = CreateChapterFormState()
-        isShowingCreateModal = false
-    }
-}
-
-private struct CharactersRow: View {
-    let count: Int
-    let onTap: () -> Void
-
-    var body: some View {
-        Button(action: onTap) {
-            HStack(spacing: 0) {
-                Text("登場人物")
-                    .font(.body)
-                    .foregroundStyle(Color.storyListLink)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-            }
-            .padding(.vertical, 10)
-            .contentShape(Rectangle())
-        }
-        .buttonStyle(.plain)
-        .listRowBackground(Color.storyListBackground)
-        .listRowInsets(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20))
     }
 }
 
@@ -177,7 +134,12 @@ private extension Color {
         ])
     )
 
+    let store = Store(
+        initialState: StoryListFeature.State(work: work),
+        reducer: { StoryListFeature() }
+    )
+
     NavigationStack {
-        StoryListView(work: work)
+        StoryListView(store: store)
     }
 }

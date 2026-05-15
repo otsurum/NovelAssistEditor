@@ -1,4 +1,5 @@
 import AppCore
+import ComposableArchitecture
 import SwiftUI
 
 struct CreateCharacterFormState: Equatable {
@@ -13,61 +14,58 @@ struct CreateCharacterFormState: Equatable {
 }
 
 struct CreateCharacterModal: View {
-    @Binding var form: CreateCharacterFormState
-    let onCancel: () -> Void
-    let onCreate: (AppCore.Character) -> Void
+    @Bindable var store: StoreOf<CharacterCardListFeature>
 
     var body: some View {
         NavigationStack {
             Form {
                 Section(header: Text("基本情報")) {
-                    TextField("名前", text: $form.name)
-                        .textFieldStyle(.roundedBorder)
+                    TextField("名前", text: Binding(
+                        get: { store.createForm.name },
+                        set: { store.send(.updateCreateFormName($0)) }
+                    ))
+                    .textFieldStyle(.roundedBorder)
                 }
 
                 Section(header: Text("設定資料")) {
-                    TextField("性格", text: $form.personality, axis: .vertical)
-                        .textFieldStyle(.roundedBorder)
-                        .lineLimit(3 ... 5)
+                    TextField("性格", text: Binding(
+                        get: { store.createForm.personality },
+                        set: { store.send(.updateCreateFormPersonality($0)) }
+                    ), axis: .vertical)
+                    .textFieldStyle(.roundedBorder)
+                    .lineLimit(3 ... 5)
 
-                    TextField("口調", text: $form.speechStyle, axis: .vertical)
-                        .textFieldStyle(.roundedBorder)
-                        .lineLimit(3 ... 5)
+                    TextField("口調", text: Binding(
+                        get: { store.createForm.speechStyle },
+                        set: { store.send(.updateCreateFormSpeechStyle($0)) }
+                    ), axis: .vertical)
+                    .textFieldStyle(.roundedBorder)
+                    .lineLimit(3 ... 5)
 
-                    TextField("背景", text: $form.background, axis: .vertical)
-                        .textFieldStyle(.roundedBorder)
-                        .lineLimit(4 ... 8)
+                    TextField("背景", text: Binding(
+                        get: { store.createForm.background },
+                        set: { store.send(.updateCreateFormBackground($0)) }
+                    ), axis: .vertical)
+                    .textFieldStyle(.roundedBorder)
+                    .lineLimit(4 ... 8)
                 }
             }
             .navigationTitle("新規キャラクター")
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("追加") {
-                        onCreate(makeCharacter())
+                        store.send(.submitCreate)
                     }
-                    .disabled(!form.isValid)
+                    .disabled(!store.createForm.isValid)
                 }
 
                 ToolbarItem(placement: .cancellationAction) {
                     Button("キャンセル") {
-                        onCancel()
+                        store.send(.hideCreateModal)
                     }
                 }
             }
         }
-    }
-
-    private func makeCharacter() -> AppCore.Character {
-        let now = Date()
-
-        return AppCore.Character(
-            name: form.name.trimmingCharacters(in: .whitespacesAndNewlines),
-            personality: form.personality.nilIfBlank,
-            speechStyle: form.speechStyle.nilIfBlank,
-            background: form.background.nilIfBlank,
-            createdAt: now,
-            updatedAt: now
-        )
     }
 }
 

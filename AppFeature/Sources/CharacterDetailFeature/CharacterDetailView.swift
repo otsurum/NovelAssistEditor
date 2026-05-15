@@ -1,4 +1,5 @@
 import AppCore
+import ComposableArchitecture
 import SwiftUI
 
 #if os(macOS)
@@ -6,35 +7,28 @@ import SwiftUI
 #endif
 
 public struct CharacterDetailView: View {
-    let character: AppCore.Character
-    let onBack: (() -> Void)?
+    let store: StoreOf<CharacterDetailFeature>
 
-    public init(
-        character: AppCore.Character,
-        onBack: (() -> Void)? = nil
-    ) {
-        self.character = character
-        self.onBack = onBack
+    public init(store: StoreOf<CharacterDetailFeature>) {
+        self.store = store
     }
 
     public var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 24) {
-                if let onBack {
-                    Button {
-                        onBack()
-                    } label: {
-                        Label("キャラクター", systemImage: "chevron.left")
-                    }
-                    .buttonStyle(.borderless)
+                Button {
+                    store.send(.backTapped)
+                } label: {
+                    Label("キャラクター", systemImage: "chevron.left")
                 }
+                .buttonStyle(.borderless)
 
                 VStack(alignment: .leading, spacing: 6) {
-                    Text(character.name)
+                    Text(store.character.name)
                         .font(.largeTitle.weight(.bold))
                         .lineLimit(nil)
 
-                    Text("更新日 \(character.updatedAt.formatted(date: .long, time: .shortened))")
+                    Text("更新日 \(store.character.updatedAt.formatted(date: .long, time: .shortened))")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
@@ -46,15 +40,15 @@ public struct CharacterDetailView: View {
                         .foregroundStyle(.secondary)
                 }
 
-                if let personality = character.personality, !personality.isEmpty {
+                if let personality = store.character.personality, !personality.isEmpty {
                     DetailSection(title: "性格", systemImage: "person.fill", bodyText: personality)
                 }
 
-                if let speechStyle = character.speechStyle, !speechStyle.isEmpty {
+                if let speechStyle = store.character.speechStyle, !speechStyle.isEmpty {
                     DetailSection(title: "口調", systemImage: "bubble.left.fill", bodyText: speechStyle)
                 }
 
-                if let background = character.background, !background.isEmpty {
+                if let background = store.character.background, !background.isEmpty {
                     DetailSection(title: "背景", systemImage: "clock.fill", bodyText: background)
                 }
 
@@ -64,13 +58,13 @@ public struct CharacterDetailView: View {
             .padding(.horizontal, 40)
             .padding(.vertical, 32)
         }
-        .navigationTitle(character.name)
+        .navigationTitle(store.character.name)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.characterDetailBackground)
     }
 
     private var isBodyEmpty: Bool {
-        [character.personality, character.speechStyle, character.background]
+        [store.character.personality, store.character.speechStyle, store.character.background]
             .compactMap(\.self)
             .allSatisfy(\.isEmpty)
     }
@@ -113,5 +107,10 @@ private extension Color {
         background: "小さな漁村で育ち、18歳で都市に出てきた。両親は漁師。"
     )
 
-    CharacterDetailView(character: sampleCharacter)
+    let store = Store(
+        initialState: CharacterDetailFeature.State(character: sampleCharacter),
+        reducer: { CharacterDetailFeature() }
+    )
+
+    CharacterDetailView(store: store)
 }

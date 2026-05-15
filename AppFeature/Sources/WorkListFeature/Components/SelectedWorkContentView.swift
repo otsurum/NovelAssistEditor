@@ -22,17 +22,14 @@ struct SelectedWorkContentView: View {
                     WorkDetailView(store: detailStore)
 
                 case .characters:
-                    CharacterCardListView(characters: detailStore.work.characters) { character in
-                        store.send(.createCharacter(character))
+                    if let childStore = store.scope(state: \.characterCardList, action: \.characterCardList) {
+                        CharacterCardListView(store: childStore)
                     }
 
                 case .story:
-                    StoryListView(
-                        work: detailStore.work,
-                        onCreateChapter: { chapter in
-                            store.send(.createChapter(chapter))
-                        }
-                    )
+                    if let childStore = store.scope(state: \.storyList, action: \.storyList) {
+                        StoryListView(store: childStore)
+                    }
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)

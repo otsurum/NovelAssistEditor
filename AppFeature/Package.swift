@@ -54,6 +54,7 @@ let package = Package(
             name: "CharacterDetailFeature",
             dependencies: [
                 "AppCore",
+                .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
             ]
         ),
         .target(
@@ -61,12 +62,14 @@ let package = Package(
             dependencies: [
                 "AppCore",
                 "CharacterDetailFeature",
+                .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
             ]
         ),
         .target(
             name: "StoryListFeature",
             dependencies: [
                 "AppCore",
+                .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
             ]
         ),
         .testTarget(

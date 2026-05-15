@@ -1,5 +1,6 @@
 import AppCore
 import CharacterDetailFeature
+import ComposableArchitecture
 import SwiftUI
 
 #if os(macOS)
@@ -7,22 +8,14 @@ import SwiftUI
 #endif
 
 public struct CharacterCardListView: View {
-    let characters: [AppCore.Character]
-    let onCreate: (AppCore.Character) -> Void
-    @State private var isShowingCreateCharacterModal = false
-    @State private var createForm = CreateCharacterFormState()
-    @State private var selectedCharacterID: AppCore.Character.ID?
+    @Bindable var store: StoreOf<CharacterCardListFeature>
 
     private let columns = [
         GridItem(.adaptive(minimum: 180, maximum: 220), spacing: 24, alignment: .top),
     ]
 
-    public init(
-        characters: [AppCore.Character],
-        onCreate: @escaping (AppCore.Character) -> Void = { _ in }
-    ) {
-        self.characters = characters
-        self.onCreate = onCreate
+    public init(store: StoreOf<CharacterCardListFeature>) {
+        self.store = store
     }
 
     public var body: some View {
@@ -33,32 +26,30 @@ public struct CharacterCardListView: View {
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {
                     Button {
-                        isShowingCreateCharacterModal = true
+                        store.send(.showCreateModal)
                     } label: {
                         Label("キャラクターを追加", systemImage: "person.badge.plus")
                     }
                 }
             }
-            .sheet(isPresented: $isShowingCreateCharacterModal) {
-                CreateCharacterModal(
-                    form: $createForm,
-                    onCancel: dismissCreateModal,
-                    onCreate: { character in
-                        onCreate(character)
-                        dismissCreateModal()
+            .sheet(
+                isPresented: Binding(
+                    get: { store.isShowingCreateModal },
+                    set: { isPresented in
+                        if !isPresented { store.send(.hideCreateModal) }
                     }
                 )
-                .presentationDetents([.medium, .large])
+            ) {
+                CreateCharacterModal(store: store)
+                    .presentationDetents([.medium, .large])
             }
     }
 
     private var content: some View {
         Group {
-            if let selectedCharacter {
-                CharacterDetailView(character: selectedCharacter) {
-                    selectedCharacterID = nil
-                }
-            } else if characters.isEmpty {
+            if let detailStore = store.scope(state: \.detail, action: \.detail) {
+                CharacterDetailView(store: detailStore)
+            } else if store.characters.isEmpty {
                 VStack(spacing: 14) {
                     ContentUnavailableView(
                         "キャラクターがいません",
@@ -67,7 +58,7 @@ public struct CharacterCardListView: View {
                     )
 
                     Button {
-                        isShowingCreateCharacterModal = true
+                        store.send(.showCreateModal)
                     } label: {
                         Label("キャラクターを追加", systemImage: "person.badge.plus")
                     }
@@ -82,15 +73,15 @@ public struct CharacterCardListView: View {
                                 .font(.title2.weight(.semibold))
                                 .lineLimit(1)
 
-                            Text("\(characters.count)人のキャラクター")
+                            Text("\(store.characters.count)人のキャラクター")
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
                         }
 
                         LazyVGrid(columns: columns, alignment: .leading, spacing: 30) {
-                            ForEach(characters) { character in
+                            ForEach(store.characters) { character in
                                 Button {
-                                    selectedCharacterID = character.id
+                                    store.send(.characterTapped(character.id))
                                 } label: {
                                     CharacterCard(character: character)
                                 }
@@ -106,18 +97,8 @@ public struct CharacterCardListView: View {
         }
     }
 
-    private func dismissCreateModal() {
-        createForm = CreateCharacterFormState()
-        isShowingCreateCharacterModal = false
-    }
-
-    private var selectedCharacter: AppCore.Character? {
-        guard let selectedCharacterID else { return nil }
-        return characters.first { $0.id == selectedCharacterID }
-    }
-
     private var navigationTitle: String {
-        selectedCharacter?.name ?? "キャラクター"
+        store.detail?.character.name ?? "キャラクター"
     }
 }
 
@@ -151,7 +132,12 @@ private extension Color {
         ),
     ]
 
+    let store = Store(
+        initialState: CharacterCardListFeature.State(characters: characters),
+        reducer: { CharacterCardListFeature() }
+    )
+
     NavigationStack {
-        CharacterCardListView(characters: characters)
+        CharacterCardListView(store: store)
     }
 }
