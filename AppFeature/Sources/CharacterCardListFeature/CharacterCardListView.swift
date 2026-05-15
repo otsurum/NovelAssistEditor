@@ -11,6 +11,7 @@ public struct CharacterCardListView: View {
     let onCreate: (AppCore.Character) -> Void
     @State private var isShowingCreateCharacterModal = false
     @State private var createForm = CreateCharacterFormState()
+    @State private var selectedCharacterID: AppCore.Character.ID?
 
     private let columns = [
         GridItem(.adaptive(minimum: 180, maximum: 220), spacing: 24, alignment: .top),
@@ -26,7 +27,7 @@ public struct CharacterCardListView: View {
 
     public var body: some View {
         content
-            .navigationTitle("キャラクター")
+            .navigationTitle(navigationTitle)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(Color.characterCardListBackground)
             .toolbar {
@@ -54,7 +55,11 @@ public struct CharacterCardListView: View {
     @ViewBuilder
     private var content: some View {
         Group {
-            if characters.isEmpty {
+            if let selectedCharacter {
+                CharacterDetailView(character: selectedCharacter) {
+                    selectedCharacterID = nil
+                }
+            } else if characters.isEmpty {
                 VStack(spacing: 14) {
                     ContentUnavailableView(
                         "キャラクターがいません",
@@ -85,8 +90,8 @@ public struct CharacterCardListView: View {
 
                         LazyVGrid(columns: columns, alignment: .leading, spacing: 30) {
                             ForEach(characters) { character in
-                                NavigationLink {
-                                    CharacterDetailView(character: character)
+                                Button {
+                                    selectedCharacterID = character.id
                                 } label: {
                                     CharacterCard(character: character)
                                 }
@@ -105,6 +110,15 @@ public struct CharacterCardListView: View {
     private func dismissCreateModal() {
         createForm = CreateCharacterFormState()
         isShowingCreateCharacterModal = false
+    }
+
+    private var selectedCharacter: AppCore.Character? {
+        guard let selectedCharacterID else { return nil }
+        return characters.first { $0.id == selectedCharacterID }
+    }
+
+    private var navigationTitle: String {
+        selectedCharacter?.name ?? "キャラクター"
     }
 }
 

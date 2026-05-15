@@ -7,14 +7,28 @@ import SwiftUI
 
 public struct CharacterDetailView: View {
     let character: AppCore.Character
+    let onBack: (() -> Void)?
 
-    public init(character: AppCore.Character) {
+    public init(
+        character: AppCore.Character,
+        onBack: (() -> Void)? = nil
+    ) {
         self.character = character
+        self.onBack = onBack
     }
 
     public var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 24) {
+                if let onBack {
+                    Button {
+                        onBack()
+                    } label: {
+                        Label("キャラクター", systemImage: "chevron.left")
+                    }
+                    .buttonStyle(.borderless)
+                }
+
                 VStack(alignment: .leading, spacing: 6) {
                     Text(character.name)
                         .font(.largeTitle.weight(.bold))
