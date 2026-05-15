@@ -1,6 +1,7 @@
 import AppCore
 import CharacterCardListFeature
 import ComposableArchitecture
+import StoryListFeature
 import SwiftUI
 import WorkDetailFeature
 
@@ -83,6 +84,9 @@ private struct SelectedWorkContentView: View {
                     CharacterCardListView(characters: detailStore.work.characters) { character in
                         store.send(.createCharacter(character))
                     }
+
+                case .story:
+                    StoryListView(work: detailStore.work)
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -111,6 +115,13 @@ private struct WorkContentSidebar: View {
                         systemImage: "person.2"
                     )
                     .tag(WorkListFeature.WorkContentSelection.characters)
+
+                    WorkContentSidebarRow(
+                        title: "ストーリー",
+                        subtitle: "\(work.story.chapters.count)件",
+                        systemImage: "book.pages"
+                    )
+                    .tag(WorkListFeature.WorkContentSelection.story)
                 } header: {
                     Text(work.title)
                 }

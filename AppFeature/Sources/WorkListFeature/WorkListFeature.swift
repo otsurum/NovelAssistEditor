@@ -13,6 +13,7 @@ public struct WorkListFeature {
     public enum WorkContentSelection: Hashable {
         case general
         case characters
+        case story
     }
 
     @ObservableState
