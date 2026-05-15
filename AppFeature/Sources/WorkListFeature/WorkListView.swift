@@ -86,7 +86,12 @@ private struct SelectedWorkContentView: View {
                     }
 
                 case .story:
-                    StoryListView(work: detailStore.work)
+                    StoryListView(
+                        work: detailStore.work,
+                        onCreateChapter: { chapter in
+                            store.send(.createChapter(chapter))
+                        }
+                    )
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)

@@ -48,6 +48,8 @@ public struct WorkListFeature {
         case createWorkFailed(message: String)
         case createCharacter(AppCore.Character)
         case createCharacterResponse(Result<Work, FailureReason>)
+        case createChapter(AppCore.Chapter)
+        case createChapterResponse(Result<Work, FailureReason>)
         case workTapped(Work)
         case sidebarSelectionChanged(SidebarSelection?)
         case workContentSelectionChanged(WorkContentSelection?)
@@ -158,6 +160,39 @@ public struct WorkListFeature {
                 return .none
 
             case let .createCharacterResponse(.failure(reason)):
+                state.errorMessage = reason.message
+                return .none
+
+            case let .createChapter(chapter):
+                guard
+                    case let .work(id) = state.selectedSidebarItem,
+                    let work = state.works.first(where: { $0.id == id })
+                else {
+                    return .none
+                }
+
+                var updatedWork = work
+                updatedWork.story.chapters.append(chapter)
+                updatedWork.updatedAt = .now
+                let workToSave = updatedWork
+                state.errorMessage = nil
+
+                return .run { [workListClient] send in
+                    do {
+                        try await workListClient.update(workToSave)
+                        await send(.createChapterResponse(.success(workToSave)))
+                    } catch {
+                        await send(.createChapterResponse(.failure(FailureReason(error.localizedDescription))))
+                    }
+                }
+
+            case let .createChapterResponse(.success(updatedWork)):
+                state.applyUpdatedWork(updatedWork)
+                state.selectedWorkContent = .story
+                state.errorMessage = nil
+                return .none
+
+            case let .createChapterResponse(.failure(reason)):
                 state.errorMessage = reason.message
                 return .none
 

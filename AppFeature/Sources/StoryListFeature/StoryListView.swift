@@ -9,25 +9,40 @@ public struct StoryListView: View {
     let work: Work
     let onCharactersTapped: () -> Void
     let onChapterTapped: (Chapter, Int) -> Void
+    let onCreateChapter: (Chapter) -> Void
+
+    @State private var isShowingCreateModal = false
+    @State private var createForm = CreateChapterFormState()
 
     public init(
         work: Work,
         onCharactersTapped: @escaping () -> Void = {},
-        onChapterTapped: @escaping (Chapter, Int) -> Void = { _, _ in }
+        onChapterTapped: @escaping (Chapter, Int) -> Void = { _, _ in },
+        onCreateChapter: @escaping (Chapter) -> Void = { _ in }
     ) {
         self.work = work
         self.onCharactersTapped = onCharactersTapped
         self.onChapterTapped = onChapterTapped
+        self.onCreateChapter = onCreateChapter
     }
 
     public var body: some View {
         Group {
-            if work.story.chapters.isEmpty && work.characters.isEmpty {
-                ContentUnavailableView(
-                    "エピソードがありません",
-                    systemImage: "book.closed",
-                    description: Text("エピソードを追加してください。")
-                )
+            if work.story.chapters.isEmpty {
+                VStack(spacing: 14) {
+                    ContentUnavailableView(
+                        "エピソードがありません",
+                        systemImage: "book.closed",
+                        description: Text("エピソードを追加してください。")
+                    )
+
+                    Button {
+                        isShowingCreateModal = true
+                    } label: {
+                        Label("エピソードを追加", systemImage: "plus.circle")
+                    }
+                    .buttonStyle(.borderedProminent)
+                }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
                 List {
@@ -48,6 +63,31 @@ public struct StoryListView: View {
         .navigationTitle(work.title)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.storyListBackground)
+        .toolbar {
+            ToolbarItem(placement: .primaryAction) {
+                Button {
+                    isShowingCreateModal = true
+                } label: {
+                    Label("エピソードを追加", systemImage: "plus")
+                }
+            }
+        }
+        .sheet(isPresented: $isShowingCreateModal) {
+            CreateChapterModal(
+                form: $createForm,
+                onCancel: dismissModal,
+                onCreate: { chapter in
+                    onCreateChapter(chapter)
+                    dismissModal()
+                }
+            )
+            .presentationDetents([.medium])
+        }
+    }
+
+    private func dismissModal() {
+        createForm = CreateChapterFormState()
+        isShowingCreateModal = false
     }
 }
 
