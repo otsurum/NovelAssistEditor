@@ -21,7 +21,8 @@ public final class WorkClient: WorkRepository {
     }
 
     public func create(_ work: Work) throws {
-        let entity = WorkMapper.toEntity(work)
+        let characters = try characterEntities(for: work.characters)
+        let entity = WorkMapper.toEntity(work, characters: characters)
         modelContext.insert(entity)
         try modelContext.save()
     }
@@ -38,7 +39,8 @@ public final class WorkClient: WorkRepository {
             throw WorkClientError.workNotFound
         }
 
-        WorkMapper.apply(work, to: entity)
+        let characters = try characterEntities(for: work.characters)
+        WorkMapper.apply(work, characters: characters, to: entity)
         try modelContext.save()
     }
 
@@ -55,6 +57,30 @@ public final class WorkClient: WorkRepository {
 
         modelContext.delete(entity)
         try modelContext.save()
+    }
+
+    private func characterEntities(for characters: [AppCore.Character]) throws -> [CharacterEntity] {
+        try characters.map { character in
+            if let entity = try fetchCharacterEntity(id: character.id) {
+                CharacterMapper.apply(character, to: entity)
+                return entity
+            }
+
+            let entity = CharacterMapper.toEntity(character)
+            modelContext.insert(entity)
+            return entity
+        }
+    }
+
+    private func fetchCharacterEntity(id: UUID) throws -> CharacterEntity? {
+        let characterID = id
+        let descriptor = FetchDescriptor<CharacterEntity>(
+            predicate: #Predicate<CharacterEntity> { entity in
+                entity.id == characterID
+            }
+        )
+
+        return try modelContext.fetch(descriptor).first
     }
 }
 

@@ -98,6 +98,7 @@ public struct WorkDetailFeature {
                     summary: state.editFormState.summary.isEmpty ? nil : state.editFormState.summary,
                     styleMemo: state.editFormState.styleMemo.isEmpty ? nil : state.editFormState.styleMemo,
                     theme: state.editFormState.theme.isEmpty ? nil : state.editFormState.theme,
+                    characters: state.work.characters,
                     createdAt: state.work.createdAt,
                     updatedAt: .now
                 )

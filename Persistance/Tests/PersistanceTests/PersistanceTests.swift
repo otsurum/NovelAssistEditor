@@ -38,3 +38,65 @@ import Testing
 
     #expect(try client.fetchAll() == [editedCharacter])
 }
+
+@MainActor
+@Test func workClientPersistsCharacters() throws {
+    let container = try ModelContainerFactory.makeShared(inMemoryOnly: true)
+    let characterClient = CharacterClient(modelContext: container.mainContext)
+    let workClient = WorkClient(modelContext: container.mainContext)
+
+    let characterCreatedAt = Date(timeIntervalSince1970: 1_000)
+    let character = AppCore.Character(
+        id: UUID(uuidString: "00000000-0000-0000-0000-000000000011")!,
+        name: "浅倉 澪",
+        personality: "明るいが秘密主義",
+        speechStyle: "軽い冗談を挟む",
+        background: "古書店の店主",
+        createdAt: characterCreatedAt,
+        updatedAt: Date(timeIntervalSince1970: 2_000)
+    )
+    try characterClient.create(character)
+
+    let workCreatedAt = Date(timeIntervalSince1970: 3_000)
+    let work = Work(
+        id: UUID(uuidString: "00000000-0000-0000-0000-000000000101")!,
+        title: "夜明けの書架",
+        characters: [character],
+        createdAt: workCreatedAt,
+        updatedAt: Date(timeIntervalSince1970: 4_000)
+    )
+
+    try workClient.create(work)
+
+    #expect(try workClient.fetchAll() == [work])
+
+    let editedCharacter = AppCore.Character(
+        id: character.id,
+        name: "浅倉 澪",
+        personality: "明るいが秘密主義で、土壇場に強い",
+        speechStyle: "軽い冗談を挟みつつ、要点は短い",
+        background: "古書店の店主。禁書の来歴を隠している",
+        createdAt: characterCreatedAt,
+        updatedAt: Date(timeIntervalSince1970: 5_000)
+    )
+    let addedCharacter = AppCore.Character(
+        id: UUID(uuidString: "00000000-0000-0000-0000-000000000012")!,
+        name: "久瀬 蓮",
+        personality: "冷静で義理堅い",
+        speechStyle: "無駄のない断定口調",
+        background: "元警備員",
+        createdAt: Date(timeIntervalSince1970: 6_000),
+        updatedAt: Date(timeIntervalSince1970: 7_000)
+    )
+    let editedWork = Work(
+        id: work.id,
+        title: "夜明けの書架 改稿版",
+        characters: [editedCharacter, addedCharacter],
+        createdAt: workCreatedAt,
+        updatedAt: Date(timeIntervalSince1970: 8_000)
+    )
+
+    try workClient.update(editedWork)
+
+    #expect(try workClient.fetchAll() == [editedWork])
+}

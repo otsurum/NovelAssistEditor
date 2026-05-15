@@ -8,6 +8,7 @@ public final class WorkEntity {
     public var summary: String?
     public var styleMemo: String?
     public var theme: String?
+    @Relationship public var characters: [CharacterEntity] = []
     public var createdAt: Date
     public var updatedAt: Date
 
@@ -17,6 +18,7 @@ public final class WorkEntity {
         summary: String?,
         styleMemo: String?,
         theme: String?,
+        characters: [CharacterEntity] = [],
         createdAt: Date,
         updatedAt: Date
     ) {
@@ -25,6 +27,7 @@ public final class WorkEntity {
         self.summary = summary
         self.styleMemo = styleMemo
         self.theme = theme
+        self.characters = characters
         self.createdAt = createdAt
         self.updatedAt = updatedAt
     }
