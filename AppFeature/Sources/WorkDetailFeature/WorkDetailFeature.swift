@@ -99,6 +99,7 @@ public struct WorkDetailFeature {
                     styleMemo: state.editFormState.styleMemo.isEmpty ? nil : state.editFormState.styleMemo,
                     theme: state.editFormState.theme.isEmpty ? nil : state.editFormState.theme,
                     characters: state.work.characters,
+                    story: state.work.story,
                     createdAt: state.work.createdAt,
                     updatedAt: .now
                 )

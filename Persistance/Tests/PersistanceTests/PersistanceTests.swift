@@ -92,8 +92,59 @@ import Testing
         id: work.id,
         title: "夜明けの書架 改稿版",
         characters: [editedCharacter, addedCharacter],
+        story: work.story,
         createdAt: workCreatedAt,
         updatedAt: Date(timeIntervalSince1970: 8000)
+    )
+
+    try workClient.update(editedWork)
+
+    #expect(try workClient.fetchAll() == [editedWork])
+}
+
+@MainActor
+@Test func workClientPersistsStoryChapters() throws {
+    let container = try ModelContainerFactory.makeShared(inMemoryOnly: true)
+    let workClient = WorkClient(modelContext: container.mainContext)
+
+    let chapter = try Chapter(
+        id: #require(UUID(uuidString: "00000000-0000-0000-0000-000000000201")),
+        episodeTitle: "第一話 夜明け",
+        body: "港町に朝が来る。"
+    )
+    let story = try Story(
+        id: #require(UUID(uuidString: "00000000-0000-0000-0000-000000000301")),
+        chapters: [chapter]
+    )
+    let workCreatedAt = Date(timeIntervalSince1970: 9000)
+    let work = try Work(
+        id: #require(UUID(uuidString: "00000000-0000-0000-0000-000000000401")),
+        title: "物語のある作品",
+        story: story,
+        createdAt: workCreatedAt,
+        updatedAt: Date(timeIntervalSince1970: 10_000)
+    )
+
+    try workClient.create(work)
+
+    #expect(try workClient.fetchAll() == [work])
+
+    let editedChapter = Chapter(
+        id: chapter.id,
+        episodeTitle: "第一話 夜明け 改稿",
+        body: "港町に朝が来る。遠くで鐘が鳴った。"
+    )
+    let addedChapter = try Chapter(
+        id: #require(UUID(uuidString: "00000000-0000-0000-0000-000000000202")),
+        episodeTitle: "第二話 影",
+        body: "路地裏に影が差す。"
+    )
+    let editedWork = Work(
+        id: work.id,
+        title: "物語のある作品 改稿版",
+        story: Story(id: story.id, chapters: [editedChapter, addedChapter]),
+        createdAt: workCreatedAt,
+        updatedAt: Date(timeIntervalSince1970: 11_000)
     )
 
     try workClient.update(editedWork)

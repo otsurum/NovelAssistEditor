@@ -7,6 +7,7 @@ public struct Work: Identifiable, Equatable, Sendable {
     public var styleMemo: String?
     public var theme: String?
     public var characters: [Character]
+    public var story: Story
     public let createdAt: Date
     public var updatedAt: Date
 
@@ -17,6 +18,7 @@ public struct Work: Identifiable, Equatable, Sendable {
         styleMemo: String? = nil,
         theme: String? = nil,
         characters: [Character] = [],
+        story: Story = Story(),
         createdAt: Date = .now,
         updatedAt: Date = .now
     ) {
@@ -26,6 +28,7 @@ public struct Work: Identifiable, Equatable, Sendable {
         self.styleMemo = styleMemo
         self.theme = theme
         self.characters = characters
+        self.story = story
         self.createdAt = createdAt
         self.updatedAt = updatedAt
     }

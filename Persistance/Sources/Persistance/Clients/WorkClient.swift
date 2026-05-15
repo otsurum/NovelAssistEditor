@@ -22,7 +22,8 @@ public final class WorkClient: WorkRepository {
 
     public func create(_ work: Work) throws {
         let characters = try characterEntities(for: work.characters)
-        let entity = WorkMapper.toEntity(work, characters: characters)
+        let story = StoryMapper.toEntity(work.story)
+        let entity = WorkMapper.toEntity(work, characters: characters, story: story)
         modelContext.insert(entity)
         try modelContext.save()
     }
@@ -40,7 +41,8 @@ public final class WorkClient: WorkRepository {
         }
 
         let characters = try characterEntities(for: work.characters)
-        WorkMapper.apply(work, characters: characters, to: entity)
+        let story = entity.story ?? StoryMapper.toEntity(work.story)
+        WorkMapper.apply(work, characters: characters, story: story, to: entity)
         try modelContext.save()
     }
 
