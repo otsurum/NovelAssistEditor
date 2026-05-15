@@ -128,7 +128,7 @@ final class WorkListFeatureTests: XCTestCase {
             title: work.title,
             characters: [character],
             createdAt: work.createdAt,
-            updatedAt: Date(timeIntervalSince1970: 1_000)
+            updatedAt: Date(timeIntervalSince1970: 1000)
         )
 
         var state = WorkListFeature.State()

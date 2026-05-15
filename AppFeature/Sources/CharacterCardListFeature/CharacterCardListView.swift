@@ -52,7 +52,6 @@ public struct CharacterCardListView: View {
             }
     }
 
-    @ViewBuilder
     private var content: some View {
         Group {
             if let selectedCharacter {
