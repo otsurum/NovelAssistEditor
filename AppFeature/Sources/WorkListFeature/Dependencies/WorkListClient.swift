@@ -10,6 +10,7 @@ typealias WorkClientError = Persistance.WorkClientError
 public struct WorkListClient: Sendable {
     public var fetchWorks: @Sendable () async throws -> [Work]
     public var create: @Sendable (Work) async throws -> Void
+    public var update: @Sendable (Work) async throws -> Void
 }
 
 extension WorkListClient: DependencyKey {
@@ -47,6 +48,23 @@ extension WorkListClient: DependencyKey {
                 #endif
                 throw WorkClientError.databaseAccessFailed(error.localizedDescription)
             }
+        },
+        update: { work in
+            do {
+                try await updateWorkOnMainActor(work)
+            } catch let error as WorkClientError {
+                // WorkClient 固有エラー
+                #if DEBUG
+                    print("❌ WorkClient error: \(error.localizedDescription)")
+                #endif
+                throw error
+            } catch {
+                // その他のエラー（DBアクセス失敗など）
+                #if DEBUG
+                    print("❌ Unexpected error during update: \(error.localizedDescription)")
+                #endif
+                throw WorkClientError.databaseAccessFailed(error.localizedDescription)
+            }
         }
     )
 
@@ -55,6 +73,9 @@ extension WorkListClient: DependencyKey {
             []
         },
         create: { _ in
+            // Test implementation
+        },
+        update: { _ in
             // Test implementation
         }
     )
@@ -69,6 +90,12 @@ extension WorkListClient: DependencyKey {
     private static func createWorkOnMainActor(_ work: Work) async throws {
         let workClient = try WorkClient.sharedLive()
         try workClient.create(work)
+    }
+
+    @MainActor
+    private static func updateWorkOnMainActor(_ work: Work) async throws {
+        let workClient = try WorkClient.sharedLive()
+        try workClient.update(work)
     }
 }
 

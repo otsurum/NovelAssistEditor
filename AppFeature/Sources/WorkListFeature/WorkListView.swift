@@ -80,7 +80,9 @@ private struct SelectedWorkContentView: View {
                     WorkDetailView(store: detailStore)
 
                 case .characters:
-                    CharacterCardListView(characters: detailStore.work.characters)
+                    CharacterCardListView(characters: detailStore.work.characters) { character in
+                        store.send(.createCharacter(character))
+                    }
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)

@@ -8,13 +8,20 @@ import SwiftUI
 
 public struct CharacterCardListView: View {
     let characters: [AppCore.Character]
+    let onCreate: (AppCore.Character) -> Void
+    @State private var isShowingCreateCharacterModal = false
+    @State private var createForm = CreateCharacterFormState()
 
     private let columns = [
         GridItem(.adaptive(minimum: 180, maximum: 220), spacing: 24, alignment: .top),
     ]
 
-    public init(characters: [AppCore.Character]) {
+    public init(
+        characters: [AppCore.Character],
+        onCreate: @escaping (AppCore.Character) -> Void = { _ in }
+    ) {
         self.characters = characters
+        self.onCreate = onCreate
     }
 
     public var body: some View {
@@ -22,17 +29,46 @@ public struct CharacterCardListView: View {
             .navigationTitle("キャラクター")
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(Color.characterCardListBackground)
+            .toolbar {
+                ToolbarItem(placement: .primaryAction) {
+                    Button {
+                        isShowingCreateCharacterModal = true
+                    } label: {
+                        Label("キャラクターを追加", systemImage: "person.badge.plus")
+                    }
+                }
+            }
+            .sheet(isPresented: $isShowingCreateCharacterModal) {
+                CreateCharacterModal(
+                    form: $createForm,
+                    onCancel: dismissCreateModal,
+                    onCreate: { character in
+                        onCreate(character)
+                        dismissCreateModal()
+                    }
+                )
+                .presentationDetents([.medium, .large])
+            }
     }
 
     @ViewBuilder
     private var content: some View {
         Group {
             if characters.isEmpty {
-                ContentUnavailableView(
-                    "キャラクターがいません",
-                    systemImage: "person.crop.circle",
-                    description: Text("まずはキャラクターを1人追加してください。")
-                )
+                VStack(spacing: 14) {
+                    ContentUnavailableView(
+                        "キャラクターがいません",
+                        systemImage: "person.crop.circle",
+                        description: Text("まずはキャラクターを1人追加してください。")
+                    )
+
+                    Button {
+                        isShowingCreateCharacterModal = true
+                    } label: {
+                        Label("キャラクターを追加", systemImage: "person.badge.plus")
+                    }
+                    .buttonStyle(.borderedProminent)
+                }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
                 ScrollView {
@@ -64,6 +100,81 @@ public struct CharacterCardListView: View {
                 }
             }
         }
+    }
+
+    private func dismissCreateModal() {
+        createForm = CreateCharacterFormState()
+        isShowingCreateCharacterModal = false
+    }
+}
+
+private struct CreateCharacterFormState: Equatable {
+    var name = ""
+    var personality = ""
+    var speechStyle = ""
+    var background = ""
+
+    var isValid: Bool {
+        !name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+    }
+}
+
+private struct CreateCharacterModal: View {
+    @Binding var form: CreateCharacterFormState
+    let onCancel: () -> Void
+    let onCreate: (AppCore.Character) -> Void
+
+    var body: some View {
+        NavigationStack {
+            Form {
+                Section(header: Text("基本情報")) {
+                    TextField("名前", text: $form.name)
+                        .textFieldStyle(.roundedBorder)
+                }
+
+                Section(header: Text("設定資料")) {
+                    TextField("性格", text: $form.personality, axis: .vertical)
+                        .textFieldStyle(.roundedBorder)
+                        .lineLimit(3 ... 5)
+
+                    TextField("口調", text: $form.speechStyle, axis: .vertical)
+                        .textFieldStyle(.roundedBorder)
+                        .lineLimit(3 ... 5)
+
+                    TextField("背景", text: $form.background, axis: .vertical)
+                        .textFieldStyle(.roundedBorder)
+                        .lineLimit(4 ... 8)
+                }
+            }
+            .navigationTitle("新規キャラクター")
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("追加") {
+                        onCreate(makeCharacter())
+                    }
+                    .disabled(!form.isValid)
+                }
+
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("キャンセル") {
+                        onCancel()
+                    }
+                }
+            }
+        }
+    }
+
+    private func makeCharacter() -> AppCore.Character {
+        let now = Date()
+
+        return AppCore.Character(
+            name: form.name.trimmingCharacters(in: .whitespacesAndNewlines),
+            personality: form.personality.nilIfBlank,
+            speechStyle: form.speechStyle.nilIfBlank,
+            background: form.background.nilIfBlank,
+            createdAt: now,
+            updatedAt: now
+        )
     }
 }
 
@@ -117,6 +228,13 @@ private struct CharacterCard: View {
             }
         }
         return nil
+    }
+}
+
+private extension String {
+    var nilIfBlank: String? {
+        let trimmed = trimmingCharacters(in: .whitespacesAndNewlines)
+        return trimmed.isEmpty ? nil : trimmed
     }
 }
 

@@ -45,6 +45,8 @@ public struct WorkListFeature {
         case hideCreateModal
         case createWork
         case createWorkFailed(message: String)
+        case createCharacter(AppCore.Character)
+        case createCharacterResponse(Result<Work, FailureReason>)
         case workTapped(Work)
         case sidebarSelectionChanged(SidebarSelection?)
         case workContentSelectionChanged(WorkContentSelection?)
@@ -123,6 +125,39 @@ public struct WorkListFeature {
 
             case let .workContentSelectionChanged(selection):
                 state.selectedWorkContent = selection ?? .general
+                return .none
+
+            case let .createCharacter(character):
+                guard
+                    case let .work(id) = state.selectedSidebarItem,
+                    let work = state.works.first(where: { $0.id == id })
+                else {
+                    return .none
+                }
+
+                var updatedWork = work
+                updatedWork.characters.append(character)
+                updatedWork.updatedAt = .now
+                let workToSave = updatedWork
+                state.errorMessage = nil
+
+                return .run { [workListClient] send in
+                    do {
+                        try await workListClient.update(workToSave)
+                        await send(.createCharacterResponse(.success(workToSave)))
+                    } catch {
+                        await send(.createCharacterResponse(.failure(FailureReason(error.localizedDescription))))
+                    }
+                }
+
+            case let .createCharacterResponse(.success(updatedWork)):
+                state.applyUpdatedWork(updatedWork)
+                state.selectedWorkContent = .characters
+                state.errorMessage = nil
+                return .none
+
+            case let .createCharacterResponse(.failure(reason)):
+                state.errorMessage = reason.message
                 return .none
 
             case .createWork:
@@ -231,6 +266,14 @@ private extension WorkListFeature.State {
     mutating func updateWorkInList(_ updatedWork: Work) {
         if let index = works.firstIndex(where: { $0.id == updatedWork.id }) {
             works[index] = updatedWork
+        }
+    }
+
+    mutating func applyUpdatedWork(_ updatedWork: Work) {
+        updateWorkInList(updatedWork)
+
+        if selectedSidebarItem == .work(updatedWork.id) {
+            detail = WorkDetailFeature.State(work: updatedWork)
         }
     }
 }
