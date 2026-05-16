@@ -12,6 +12,8 @@ struct WorkContentSidebar: View {
 
     var body: some View {
         VStack(spacing: 0) {
+            WorkContentSidebarHeader(work: work)
+
             List(selection: selection) {
                 Section {
                     WorkContentSidebarRow(
@@ -35,7 +37,7 @@ struct WorkContentSidebar: View {
                     )
                     .tag(WorkListFeature.WorkContentSelection.story)
                 } header: {
-                    Text(work.title)
+                    Text("内容")
                 }
             }
             .listStyle(.sidebar)
@@ -49,6 +51,38 @@ struct WorkContentSidebar: View {
             get: { store.selectedWorkContent },
             set: { store.send(.workContentSelectionChanged($0)) }
         )
+    }
+}
+
+private struct WorkContentSidebarHeader: View {
+    let work: Work
+
+    var body: some View {
+        HStack(spacing: 12) {
+            VStack(alignment: .leading, spacing: 2) {
+                Text(work.title)
+                    .font(.headline.weight(.semibold))
+                    .lineLimit(1)
+                    .truncationMode(.tail)
+
+                Text(itemCountText)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .lineLimit(1)
+            }
+
+            Spacer(minLength: 0)
+        }
+        .padding(.horizontal, 16)
+        .frame(maxWidth: .infinity, minHeight: 66, alignment: .center)
+        .background(.bar)
+        .overlay(alignment: .bottom) {
+            Divider()
+        }
+    }
+
+    private var itemCountText: String {
+        "3件の項目"
     }
 }
 
