@@ -122,7 +122,7 @@ import Testing
         title: "物語のある作品",
         story: story,
         createdAt: workCreatedAt,
-        updatedAt: Date(timeIntervalSince1970: 10_000)
+        updatedAt: Date(timeIntervalSince1970: 10000)
     )
 
     try workClient.create(work)
@@ -144,7 +144,7 @@ import Testing
         title: "物語のある作品 改稿版",
         story: Story(id: story.id, chapters: [editedChapter, addedChapter]),
         createdAt: workCreatedAt,
-        updatedAt: Date(timeIntervalSince1970: 11_000)
+        updatedAt: Date(timeIntervalSince1970: 11000)
     )
 
     try workClient.update(editedWork)

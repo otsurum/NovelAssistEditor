@@ -2,7 +2,7 @@ import AppCore
 import ComposableArchitecture
 import SwiftUI
 
-struct CreateChapterFormState: Equatable {
+public struct CreateChapterFormState: Equatable {
     var episodeTitle = ""
 
     var isValid: Bool {

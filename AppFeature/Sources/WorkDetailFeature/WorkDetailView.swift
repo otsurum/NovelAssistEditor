@@ -27,7 +27,6 @@ public struct WorkDetailView: View {
     }
 }
 
-
 #Preview {
     let sampleWork = Work(
         title: "サンプル作品",

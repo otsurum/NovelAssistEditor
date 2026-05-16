@@ -2,7 +2,7 @@ import AppCore
 import ComposableArchitecture
 import SwiftUI
 
-struct CreateCharacterFormState: Equatable {
+public struct CreateCharacterFormState: Equatable {
     var name = ""
     var personality = ""
     var speechStyle = ""
@@ -32,22 +32,22 @@ struct CreateCharacterModal: View {
                         get: { store.createForm.personality },
                         set: { store.send(.updateCreateFormPersonality($0)) }
                     ), axis: .vertical)
-                    .textFieldStyle(.roundedBorder)
-                    .lineLimit(3 ... 5)
+                        .textFieldStyle(.roundedBorder)
+                        .lineLimit(3 ... 5)
 
                     TextField("口調", text: Binding(
                         get: { store.createForm.speechStyle },
                         set: { store.send(.updateCreateFormSpeechStyle($0)) }
                     ), axis: .vertical)
-                    .textFieldStyle(.roundedBorder)
-                    .lineLimit(3 ... 5)
+                        .textFieldStyle(.roundedBorder)
+                        .lineLimit(3 ... 5)
 
                     TextField("背景", text: Binding(
                         get: { store.createForm.background },
                         set: { store.send(.updateCreateFormBackground($0)) }
                     ), axis: .vertical)
-                    .textFieldStyle(.roundedBorder)
-                    .lineLimit(4 ... 8)
+                        .textFieldStyle(.roundedBorder)
+                        .lineLimit(4 ... 8)
                 }
             }
             .navigationTitle("新規キャラクター")
