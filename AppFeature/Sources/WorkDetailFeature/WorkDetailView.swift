@@ -8,9 +8,14 @@ import SwiftUI
 
 public struct WorkDetailView: View {
     let store: StoreOf<WorkDetailFeature>
+    let navigationTitleOverride: String?
 
-    public init(store: StoreOf<WorkDetailFeature>) {
+    public init(
+        store: StoreOf<WorkDetailFeature>,
+        navigationTitleOverride: String? = nil
+    ) {
         self.store = store
+        self.navigationTitleOverride = navigationTitleOverride
     }
 
     public var body: some View {
@@ -21,7 +26,7 @@ public struct WorkDetailView: View {
                 WorkDetailContent(store: store)
             }
         }
-        .navigationTitle(store.work.title)
+        .navigationTitle(navigationTitleOverride ?? store.work.title)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.workDetailBackground)
     }

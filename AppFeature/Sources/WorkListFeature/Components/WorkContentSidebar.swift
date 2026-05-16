@@ -75,9 +75,11 @@ private struct WorkContentSidebarHeader: View {
         }
         .padding(.horizontal, 16)
         .frame(maxWidth: .infinity, minHeight: 66, alignment: .center)
-        .background(.bar)
+        .background(Color.workContentHeaderBackground)
         .overlay(alignment: .bottom) {
-            Divider()
+            Rectangle()
+                .fill(Color.workContentHeaderSeparator)
+                .frame(height: 1)
         }
     }
 
@@ -114,7 +116,19 @@ struct WorkContentSidebarRow: View {
     }
 }
 
-private extension Color {
+extension Color {
+    static var workContentHeaderBackground: Color {
+        workContentSidebarBackground
+    }
+
+    static var workContentHeaderSeparator: Color {
+        #if os(macOS)
+            Color(nsColor: .separatorColor)
+        #else
+            Color(.separator)
+        #endif
+    }
+
     static var workContentSidebarBackground: Color {
         #if os(macOS)
             Color(nsColor: .underPageBackgroundColor)

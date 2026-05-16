@@ -36,6 +36,8 @@ public struct WorkListView: View {
             }
         }
         .navigationSplitViewStyle(.balanced)
+        // .toolbarBackground(Color.workContentHeaderBackground, for: .windowToolbar)
+        // .toolbarBackground(.visible, for: .windowToolbar)
         .onAppear {
             store.send(.onAppear)
         }

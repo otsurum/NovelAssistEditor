@@ -9,18 +9,23 @@ import SwiftUI
 
 public struct CharacterCardListView: View {
     @Bindable var store: StoreOf<CharacterCardListFeature>
+    let navigationTitleOverride: String?
 
     private let columns = [
         GridItem(.adaptive(minimum: 180, maximum: 220), spacing: 24, alignment: .top),
     ]
 
-    public init(store: StoreOf<CharacterCardListFeature>) {
+    public init(
+        store: StoreOf<CharacterCardListFeature>,
+        navigationTitleOverride: String? = nil
+    ) {
         self.store = store
+        self.navigationTitleOverride = navigationTitleOverride
     }
 
     public var body: some View {
         content
-            .navigationTitle(navigationTitle)
+            .navigationTitle(navigationTitleOverride ?? navigationTitle)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(Color.characterCardListBackground)
             .toolbar {

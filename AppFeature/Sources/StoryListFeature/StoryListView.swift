@@ -8,9 +8,14 @@ import SwiftUI
 
 public struct StoryListView: View {
     @Bindable var store: StoreOf<StoryListFeature>
+    let navigationTitleOverride: String?
 
-    public init(store: StoreOf<StoryListFeature>) {
+    public init(
+        store: StoreOf<StoryListFeature>,
+        navigationTitleOverride: String? = nil
+    ) {
         self.store = store
+        self.navigationTitleOverride = navigationTitleOverride
     }
 
     public var body: some View {
@@ -43,7 +48,7 @@ public struct StoryListView: View {
                 .scrollContentBackground(.hidden)
             }
         }
-        .navigationTitle(store.work.title)
+        .navigationTitle(navigationTitleOverride ?? store.work.title)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.storyListBackground)
         .toolbar {

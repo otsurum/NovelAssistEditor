@@ -19,20 +19,53 @@ struct SelectedWorkContentView: View {
             Group {
                 switch store.selectedWorkContent {
                 case .general:
-                    WorkDetailView(store: detailStore)
+                    WorkDetailView(
+                        store: detailStore,
+                        navigationTitleOverride: headerTitle
+                    )
 
                 case .characters:
                     if let childStore = store.scope(state: \.characterCardList, action: \.characterCardList) {
-                        CharacterCardListView(store: childStore)
+                        CharacterCardListView(
+                            store: childStore,
+                            navigationTitleOverride: headerTitle
+                        )
                     }
 
                 case .story:
                     if let childStore = store.scope(state: \.storyList, action: \.storyList) {
-                        StoryListView(store: childStore)
+                        StoryListView(
+                            store: childStore,
+                            navigationTitleOverride: headerTitle
+                        )
                     }
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
+        }
+        .overlay(alignment: .top) {
+            Rectangle()
+                .fill(Color.workContentHeaderSeparator)
+                .frame(height: 1)
+        }
+    }
+
+    private var headerTitle: String {
+        "\(detailStore.work.title)　>　\(store.selectedWorkContent.title)"
+    }
+}
+
+private extension WorkListFeature.WorkContentSelection {
+    var title: String {
+        switch self {
+        case .general:
+            "一般"
+
+        case .characters:
+            "キャラクター"
+
+        case .story:
+            "ストーリー"
         }
     }
 }
