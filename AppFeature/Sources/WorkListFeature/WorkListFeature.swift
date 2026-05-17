@@ -1,6 +1,8 @@
 import AppCore
+import CharacterCardListFeature
 import ComposableArchitecture
 import Foundation
+import StoryListFeature
 import WorkDetailFeature
 
 @Reducer
@@ -8,6 +10,12 @@ public struct WorkListFeature {
     public enum SidebarSelection: Hashable {
         case allWorks
         case work(Work.ID)
+    }
+
+    public enum WorkContentSelection: Hashable {
+        case general
+        case characters
+        case story
     }
 
     @ObservableState
@@ -18,7 +26,10 @@ public struct WorkListFeature {
         public var createModalForm = CreateModalFormState()
         public var errorMessage: String?
         public var selectedSidebarItem: SidebarSelection = .allWorks
+        public var selectedWorkContent: WorkContentSelection = .general
         public var detail: WorkDetailFeature.State?
+        public var characterCardList: CharacterCardListFeature.State?
+        public var storyList: StoryListFeature.State?
 
         public init() {}
     }
@@ -35,12 +46,17 @@ public struct WorkListFeature {
     public enum Action: Equatable {
         case onAppear
         case detail(WorkDetailFeature.Action)
+        case characterCardList(CharacterCardListFeature.Action)
+        case storyList(StoryListFeature.Action)
         case showCreateModal
         case hideCreateModal
         case createWork
         case createWorkFailed(message: String)
+        case createCharacterResponse(Result<Work, FailureReason>)
+        case createChapterResponse(Result<Work, FailureReason>)
         case workTapped(Work)
         case sidebarSelectionChanged(SidebarSelection?)
+        case workContentSelectionChanged(WorkContentSelection?)
         case worksResponse(Result<[Work], FailureReason>)
         case updateFormTitle(String)
         case updateFormSummary(String)
@@ -101,6 +117,8 @@ public struct WorkListFeature {
 
             case let .detail(.updateWorkResponse(.success(updatedWork))):
                 state.updateWorkInList(updatedWork)
+                state.characterCardList?.characters = updatedWork.characters
+                state.storyList?.work = updatedWork
                 return .none
 
             case .detail:
@@ -112,6 +130,82 @@ public struct WorkListFeature {
 
             case let .sidebarSelectionChanged(selection):
                 state.select(selection ?? .allWorks)
+                return .none
+
+            case let .workContentSelectionChanged(selection):
+                state.selectedWorkContent = selection ?? .general
+                return .none
+
+            case let .characterCardList(.delegate(.characterCreated(character))):
+                guard
+                    case let .work(id) = state.selectedSidebarItem,
+                    let work = state.works.first(where: { $0.id == id })
+                else {
+                    return .none
+                }
+
+                var updatedWork = work
+                updatedWork.characters.append(character)
+                updatedWork.updatedAt = .now
+                let workToSave = updatedWork
+                state.errorMessage = nil
+
+                return .run { [workListClient] send in
+                    do {
+                        try await workListClient.update(workToSave)
+                        await send(.createCharacterResponse(.success(workToSave)))
+                    } catch {
+                        await send(.createCharacterResponse(.failure(FailureReason(error.localizedDescription))))
+                    }
+                }
+
+            case .characterCardList:
+                return .none
+
+            case let .storyList(.delegate(.chapterCreated(chapter))):
+                guard
+                    case let .work(id) = state.selectedSidebarItem,
+                    let work = state.works.first(where: { $0.id == id })
+                else {
+                    return .none
+                }
+
+                var updatedWork = work
+                updatedWork.story.chapters.append(chapter)
+                updatedWork.updatedAt = .now
+                let workToSave = updatedWork
+                state.errorMessage = nil
+
+                return .run { [workListClient] send in
+                    do {
+                        try await workListClient.update(workToSave)
+                        await send(.createChapterResponse(.success(workToSave)))
+                    } catch {
+                        await send(.createChapterResponse(.failure(FailureReason(error.localizedDescription))))
+                    }
+                }
+
+            case .storyList:
+                return .none
+
+            case let .createCharacterResponse(.success(updatedWork)):
+                state.applyUpdatedWork(updatedWork)
+                state.selectedWorkContent = .characters
+                state.errorMessage = nil
+                return .none
+
+            case let .createCharacterResponse(.failure(reason)):
+                state.errorMessage = reason.message
+                return .none
+
+            case let .createChapterResponse(.success(updatedWork)):
+                state.applyUpdatedWork(updatedWork)
+                state.selectedWorkContent = .story
+                state.errorMessage = nil
+                return .none
+
+            case let .createChapterResponse(.failure(reason)):
+                state.errorMessage = reason.message
                 return .none
 
             case .createWork:
@@ -128,7 +222,6 @@ public struct WorkListFeature {
                 return .run { [workListClient] send in
                     do {
                         try await workListClient.create(work)
-                        // 永続化成功後にリストを再取得して state を更新
                         let works = try await workListClient.fetchWorks()
                         await send(.worksResponse(.success(works)))
                     } catch {
@@ -160,6 +253,12 @@ public struct WorkListFeature {
         .ifLet(\.detail, action: \.detail) {
             WorkDetailFeature()
         }
+        .ifLet(\.characterCardList, action: \.characterCardList) {
+            CharacterCardListFeature()
+        }
+        .ifLet(\.storyList, action: \.storyList) {
+            StoryListFeature()
+        }
     }
 }
 
@@ -171,31 +270,46 @@ private extension WorkListFeature.State {
         }
 
         selectedSidebarItem = .work(work.id)
+        selectedWorkContent = .general
         detail = WorkDetailFeature.State(work: work)
+        characterCardList = CharacterCardListFeature.State(characters: work.characters)
+        storyList = StoryListFeature.State(work: work)
     }
 
     mutating func select(_ selection: WorkListFeature.SidebarSelection) {
         switch selection {
         case .allWorks:
             selectedSidebarItem = .allWorks
+            selectedWorkContent = .general
             detail = nil
+            characterCardList = nil
+            storyList = nil
 
         case let .work(id):
             guard let work = works.first(where: { $0.id == id }) else {
                 selectedSidebarItem = .allWorks
+                selectedWorkContent = .general
                 detail = nil
+                characterCardList = nil
+                storyList = nil
                 return
             }
 
             selectedSidebarItem = .work(id)
+            selectedWorkContent = .general
             detail = WorkDetailFeature.State(work: work)
+            characterCardList = CharacterCardListFeature.State(characters: work.characters)
+            storyList = StoryListFeature.State(work: work)
         }
     }
 
     mutating func reconcileSelection() {
         switch selectedSidebarItem {
         case .allWorks:
+            selectedWorkContent = .general
             detail = nil
+            characterCardList = nil
+            storyList = nil
             return
 
         case let .work(id):
@@ -209,12 +323,24 @@ private extension WorkListFeature.State {
             }
 
             detail = WorkDetailFeature.State(work: selectedWork)
+            characterCardList = CharacterCardListFeature.State(characters: selectedWork.characters)
+            storyList = StoryListFeature.State(work: selectedWork)
         }
     }
 
     mutating func updateWorkInList(_ updatedWork: Work) {
         if let index = works.firstIndex(where: { $0.id == updatedWork.id }) {
             works[index] = updatedWork
+        }
+    }
+
+    mutating func applyUpdatedWork(_ updatedWork: Work) {
+        updateWorkInList(updatedWork)
+
+        if selectedSidebarItem == .work(updatedWork.id) {
+            detail = WorkDetailFeature.State(work: updatedWork)
+            characterCardList = CharacterCardListFeature.State(characters: updatedWork.characters)
+            storyList = StoryListFeature.State(work: updatedWork)
         }
     }
 }
