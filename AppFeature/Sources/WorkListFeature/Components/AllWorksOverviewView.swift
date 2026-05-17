@@ -21,16 +21,16 @@ struct AllWorksOverviewView: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
                 ScrollView {
-                        LazyVGrid(columns: columns, alignment: .leading, spacing: 30) {
-                            ForEach(works) { work in
-                                Button {
-                                    onSelect(work)
-                                } label: {
-                                    WorkOverviewCard(work: work)
-                                }
-                                .buttonStyle(.plain)
+                    LazyVGrid(columns: columns, alignment: .leading, spacing: 30) {
+                        ForEach(works) { work in
+                            Button {
+                                onSelect(work)
+                            } label: {
+                                WorkOverviewCard(work: work)
                             }
+                            .buttonStyle(.plain)
                         }
+                    }
                     .frame(maxWidth: .infinity, alignment: .topLeading)
                     .padding(.horizontal, 28)
                     .padding(.vertical, 26)
@@ -59,7 +59,7 @@ struct WorkOverviewCard: View {
                         RoundedRectangle(cornerRadius: 8)
                             .stroke(Color.secondary.opacity(0.16), lineWidth: 1)
                     }
-                
+
                 VStack(alignment: .leading, spacing: 8) {
                     Text(work.title)
                         .font(.callout.weight(.semibold))
