@@ -21,17 +21,6 @@ struct AllWorksOverviewView: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
                 ScrollView {
-                    VStack(alignment: .leading, spacing: 28) {
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text("すべての作品")
-                                .font(.title2.weight(.semibold))
-                                .lineLimit(1)
-
-                            Text("\(works.count)件の作品")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                        }
-
                         LazyVGrid(columns: columns, alignment: .leading, spacing: 30) {
                             ForEach(works) { work in
                                 Button {
@@ -42,7 +31,6 @@ struct AllWorksOverviewView: View {
                                 .buttonStyle(.plain)
                             }
                         }
-                    }
                     .frame(maxWidth: .infinity, alignment: .topLeading)
                     .padding(.horizontal, 28)
                     .padding(.vertical, 26)
@@ -50,8 +38,12 @@ struct AllWorksOverviewView: View {
             }
         }
         .navigationTitle("すべての作品")
+        .navigationSubtitle("\(works.count)件の作品")
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color.workOverviewBackground)
+        .background {
+            Color.workOverviewBackground
+                .ignoresSafeArea(.container, edges: .top)
+        }
     }
 }
 

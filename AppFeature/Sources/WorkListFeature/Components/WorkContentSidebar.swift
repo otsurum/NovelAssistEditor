@@ -40,7 +40,10 @@ struct WorkContentSidebar: View {
             .listStyle(.sidebar)
             .scrollContentBackground(.hidden)
         }
-        .background(Color.workContentSidebarBackground)
+        .background {
+            Color.workContentSidebarBackground
+                .ignoresSafeArea(.container, edges: .top)
+        }
     }
 
     private var selection: Binding<WorkListFeature.WorkContentSelection?> {
