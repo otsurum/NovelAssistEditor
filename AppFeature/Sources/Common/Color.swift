@@ -49,44 +49,8 @@ public extension Color {
         #endif
     }
 
-    static var workContentHeaderBackground: Color {
-        workContentSidebarBackground
-    }
-
-    static var workContentHeaderSeparator: Color {
-        #if os(macOS)
-            Color(nsColor: .separatorColor)
-        #else
-            Color(.separator)
-        #endif
-    }
-
-    static var workContentSidebarBackground: Color {
-        #if os(macOS)
-            Color(nsColor: .underPageBackgroundColor)
-        #else
-            Color(.secondarySystemBackground)
-        #endif
-    }
-
     static var workDetailBackground: Color {
         appContentBackground
-    }
-
-    static var workEditorBackground: Color {
-        #if os(macOS)
-            Color(nsColor: .controlBackgroundColor)
-        #else
-            Color(.secondarySystemBackground)
-        #endif
-    }
-
-    static var workEditorBorder: Color {
-        #if os(macOS)
-            Color(nsColor: .separatorColor).opacity(0.7)
-        #else
-            Color(.separator).opacity(0.7)
-        #endif
     }
 
     static var workOverviewBackground: Color {
@@ -94,7 +58,11 @@ public extension Color {
     }
 
     static var workOverviewPreviewBackground: Color {
-        workEditorBackground
+        #if os(macOS)
+            Color(nsColor: .controlBackgroundColor)
+        #else
+            Color(.secondarySystemBackground)
+        #endif
     }
 
     private static var appContentBackground: Color {

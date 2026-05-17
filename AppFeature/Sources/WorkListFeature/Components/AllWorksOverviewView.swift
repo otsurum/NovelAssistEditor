@@ -59,7 +59,7 @@ struct WorkOverviewCard: View {
                         RoundedRectangle(cornerRadius: 8)
                             .stroke(Color.secondary.opacity(0.16), lineWidth: 1)
                     }
-
+                
                 VStack(alignment: .leading, spacing: 8) {
                     Text(work.title)
                         .font(.callout.weight(.semibold))

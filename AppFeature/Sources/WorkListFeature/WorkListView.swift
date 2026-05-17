@@ -32,7 +32,6 @@ public struct WorkListView: View {
             }
         }
         .navigationSplitViewStyle(.balanced)
-        .toolbarBackground(.hidden, for: .windowToolbar)
         .onAppear {
             store.send(.onAppear)
         }

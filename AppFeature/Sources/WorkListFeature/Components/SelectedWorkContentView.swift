@@ -1,6 +1,5 @@
 import AppCore
 import CharacterCardListFeature
-import Common
 import ComposableArchitecture
 import StoryListFeature
 import SwiftUI
@@ -45,9 +44,7 @@ struct SelectedWorkContentView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
         .overlay(alignment: .top) {
-            Rectangle()
-                .fill(Color.workContentHeaderSeparator)
-                .frame(height: 1)
+            Divider()
         }
     }
 

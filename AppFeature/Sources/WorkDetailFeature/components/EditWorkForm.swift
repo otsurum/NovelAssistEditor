@@ -1,5 +1,4 @@
 import AppCore
-import Common
 import ComposableArchitecture
 import SwiftUI
 
@@ -84,7 +83,6 @@ struct EditWorkForm: View {
             .padding(.horizontal, 40)
             .padding(.vertical, 32)
         }
-        .background(Color.workDetailBackground)
     }
 }
 
@@ -102,14 +100,6 @@ struct WorkTitleEditField: View {
                 .textFieldStyle(.plain)
                 .padding(.horizontal, 12)
                 .padding(.vertical, 10)
-                .background {
-                    RoundedRectangle(cornerRadius: 8)
-                        .fill(Color.workEditorBackground)
-                }
-                .overlay {
-                    RoundedRectangle(cornerRadius: 8)
-                        .stroke(Color.workEditorBorder, lineWidth: 1)
-                }
         }
     }
 }
@@ -147,10 +137,6 @@ struct ErrorBanner: View {
             Spacer(minLength: 0)
         }
         .padding(10)
-        .background {
-            RoundedRectangle(cornerRadius: 8)
-                .fill(Color.red.opacity(0.12))
-        }
     }
 }
 
@@ -159,13 +145,5 @@ extension View {
         scrollContentBackground(.hidden)
             .frame(minHeight: minHeight)
             .padding(8)
-            .background {
-                RoundedRectangle(cornerRadius: 8)
-                    .fill(Color.workEditorBackground)
-            }
-            .overlay {
-                RoundedRectangle(cornerRadius: 8)
-                    .stroke(Color.workEditorBorder, lineWidth: 1)
-            }
     }
 }

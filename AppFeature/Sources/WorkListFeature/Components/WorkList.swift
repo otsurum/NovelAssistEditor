@@ -7,7 +7,6 @@
 
 import AppCore
 import ComposableArchitecture
-import Common
 import SwiftUI
 
 public struct WorkList: View {
@@ -49,10 +48,6 @@ public struct WorkList: View {
             }
         }
         .searchable(text: $searchText, placement: .sidebar, prompt: "検索")
-        .background {
-            Color.workContentSidebarBackground
-                .ignoresSafeArea(.container, edges: .top)
-        }
     }
 
     private var selection: Binding<WorkListFeature.SidebarSelection?> {

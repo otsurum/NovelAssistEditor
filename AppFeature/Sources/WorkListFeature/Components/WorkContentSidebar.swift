@@ -1,5 +1,4 @@
 import AppCore
-import Common
 import ComposableArchitecture
 import SwiftUI
 
@@ -40,10 +39,6 @@ struct WorkContentSidebar: View {
             .listStyle(.sidebar)
             .scrollContentBackground(.hidden)
         }
-        .background {
-            Color.workContentSidebarBackground
-                .ignoresSafeArea(.container, edges: .top)
-        }
     }
 
     private var selection: Binding<WorkListFeature.WorkContentSelection?> {
@@ -75,11 +70,8 @@ private struct WorkContentSidebarHeader: View {
         }
         .padding(.horizontal, 16)
         .frame(maxWidth: .infinity, minHeight: 66, alignment: .center)
-        .background(Color.workContentHeaderBackground)
         .overlay(alignment: .bottom) {
-            Rectangle()
-                .fill(Color.workContentHeaderSeparator)
-                .frame(height: 1)
+            Divider()
         }
     }
 
