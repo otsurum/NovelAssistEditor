@@ -1,9 +1,6 @@
 import AppCore
+import Common
 import SwiftUI
-
-#if os(macOS)
-    import AppKit
-#endif
 
 struct CharacterCard: View {
     let character: AppCore.Character
@@ -78,31 +75,5 @@ struct CharacterCard: View {
             }
         }
         return nil
-    }
-}
-
-extension Color {
-    static var characterCardBackground: Color {
-        #if os(macOS)
-            Color(nsColor: .controlAccentColor).opacity(0.10)
-        #else
-            Color(.systemTeal).opacity(0.10)
-        #endif
-    }
-
-    static var characterCardBorder: Color {
-        #if os(macOS)
-            Color(nsColor: .controlAccentColor).opacity(0.34)
-        #else
-            Color(.systemTeal).opacity(0.34)
-        #endif
-    }
-
-    static var characterCardAccent: Color {
-        #if os(macOS)
-            Color(nsColor: .controlAccentColor)
-        #else
-            Color(.systemTeal)
-        #endif
     }
 }

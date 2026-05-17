@@ -1,9 +1,6 @@
 import AppCore
+import Common
 import SwiftUI
-
-#if os(macOS)
-    import AppKit
-#endif
 
 struct AllWorksOverviewView: View {
     let works: [Work]
@@ -108,23 +105,5 @@ struct WorkOverviewCard: View {
             }
         }
         return nil
-    }
-}
-
-private extension Color {
-    static var workOverviewBackground: Color {
-        #if os(macOS)
-            Color(nsColor: .textBackgroundColor)
-        #else
-            Color(.systemBackground)
-        #endif
-    }
-
-    static var workOverviewPreviewBackground: Color {
-        #if os(macOS)
-            Color(nsColor: .controlBackgroundColor)
-        #else
-            Color(.secondarySystemBackground)
-        #endif
     }
 }

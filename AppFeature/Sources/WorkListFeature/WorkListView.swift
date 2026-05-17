@@ -5,10 +5,6 @@ import StoryListFeature
 import SwiftUI
 import WorkDetailFeature
 
-#if os(macOS)
-    import AppKit
-#endif
-
 public struct WorkListView: View {
     @Bindable var store: StoreOf<WorkListFeature>
     @State private var columnVisibility: NavigationSplitViewVisibility = .all

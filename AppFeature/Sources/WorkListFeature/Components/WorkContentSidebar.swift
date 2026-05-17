@@ -1,10 +1,7 @@
 import AppCore
+import Common
 import ComposableArchitecture
 import SwiftUI
-
-#if os(macOS)
-    import AppKit
-#endif
 
 struct WorkContentSidebar: View {
     @Bindable var store: StoreOf<WorkListFeature>
@@ -113,27 +110,5 @@ struct WorkContentSidebarRow: View {
         }
         .padding(.vertical, 6)
         .contentShape(Rectangle())
-    }
-}
-
-extension Color {
-    static var workContentHeaderBackground: Color {
-        workContentSidebarBackground
-    }
-
-    static var workContentHeaderSeparator: Color {
-        #if os(macOS)
-            Color(nsColor: .separatorColor)
-        #else
-            Color(.separator)
-        #endif
-    }
-
-    static var workContentSidebarBackground: Color {
-        #if os(macOS)
-            Color(nsColor: .underPageBackgroundColor)
-        #else
-            Color(.secondarySystemBackground)
-        #endif
     }
 }

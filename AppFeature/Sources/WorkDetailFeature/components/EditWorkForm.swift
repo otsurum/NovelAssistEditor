@@ -1,10 +1,7 @@
 import AppCore
+import Common
 import ComposableArchitecture
 import SwiftUI
-
-#if os(macOS)
-    import AppKit
-#endif
 
 struct EditWorkForm: View {
     let store: StoreOf<WorkDetailFeature>
@@ -170,23 +167,5 @@ extension View {
                 RoundedRectangle(cornerRadius: 8)
                     .stroke(Color.workEditorBorder, lineWidth: 1)
             }
-    }
-}
-
-private extension Color {
-    static var workEditorBackground: Color {
-        #if os(macOS)
-            Color(nsColor: .controlBackgroundColor)
-        #else
-            Color(.secondarySystemBackground)
-        #endif
-    }
-
-    static var workEditorBorder: Color {
-        #if os(macOS)
-            Color(nsColor: .separatorColor).opacity(0.7)
-        #else
-            Color(.separator).opacity(0.7)
-        #endif
     }
 }

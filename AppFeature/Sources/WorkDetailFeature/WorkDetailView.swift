@@ -1,10 +1,7 @@
 import AppCore
+import Common
 import ComposableArchitecture
 import SwiftUI
-
-#if os(macOS)
-    import AppKit
-#endif
 
 public struct WorkDetailView: View {
     let store: StoreOf<WorkDetailFeature>

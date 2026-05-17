@@ -1,11 +1,8 @@
 import AppCore
 import CharacterDetailFeature
+import Common
 import ComposableArchitecture
 import SwiftUI
-
-#if os(macOS)
-    import AppKit
-#endif
 
 public struct CharacterCardListView: View {
     @Bindable var store: StoreOf<CharacterCardListFeature>
@@ -104,16 +101,6 @@ public struct CharacterCardListView: View {
 
     private var navigationTitle: String {
         store.detail?.character.name ?? "キャラクター"
-    }
-}
-
-private extension Color {
-    static var characterCardListBackground: Color {
-        #if os(macOS)
-            Color(nsColor: .textBackgroundColor)
-        #else
-            Color(.systemBackground)
-        #endif
     }
 }
 

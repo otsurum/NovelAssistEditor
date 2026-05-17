@@ -1,10 +1,7 @@
 import AppCore
+import Common
 import ComposableArchitecture
 import SwiftUI
-
-#if os(macOS)
-    import AppKit
-#endif
 
 public struct StoryListView: View {
     @Bindable var store: StoreOf<StoryListFeature>
@@ -99,24 +96,6 @@ private struct ChapterRow: View {
     private var formattedTitle: String {
         let paddedNumber = String(format: "%02d", number)
         return "\(paddedNumber).\u{2003}\(chapter.episodeTitle)"
-    }
-}
-
-private extension Color {
-    static var storyListBackground: Color {
-        #if os(macOS)
-            Color(nsColor: .textBackgroundColor)
-        #else
-            Color(.systemBackground)
-        #endif
-    }
-
-    static var storyListLink: Color {
-        #if os(macOS)
-            Color(nsColor: .linkColor)
-        #else
-            Color(.link)
-        #endif
     }
 }
 

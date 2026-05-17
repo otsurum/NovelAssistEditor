@@ -12,7 +12,7 @@ let package = Package(
         // Products define the executables and libraries a package produces, making them visible to other packages.
         .library(
             name: "AppFeature",
-            targets: ["AppFeature", "WorkListFeature", "WorkDetailFeature", "CharacterDetailFeature", "CharacterCardListFeature", "StoryListFeature"]
+            targets: ["AppFeature", "Common", "WorkListFeature", "WorkDetailFeature", "CharacterDetailFeature", "CharacterCardListFeature", "StoryListFeature"]
         ),
     ],
     dependencies: [
@@ -23,6 +23,9 @@ let package = Package(
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
         // Targets can depend on other targets in this package and products from dependencies.
+        .target(
+            name: "Common"
+        ),
         .target(
             name: "AppFeature",
             dependencies: [
@@ -35,6 +38,7 @@ let package = Package(
             name: "WorkListFeature",
             dependencies: [
                 "AppCore",
+                "Common",
                 "CharacterCardListFeature",
                 "StoryListFeature",
                 "Persistance",
@@ -46,6 +50,7 @@ let package = Package(
             name: "WorkDetailFeature",
             dependencies: [
                 "AppCore",
+                "Common",
                 "Persistance",
                 .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
             ]
@@ -54,6 +59,7 @@ let package = Package(
             name: "CharacterDetailFeature",
             dependencies: [
                 "AppCore",
+                "Common",
                 .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
             ]
         ),
@@ -61,6 +67,7 @@ let package = Package(
             name: "CharacterCardListFeature",
             dependencies: [
                 "AppCore",
+                "Common",
                 "CharacterDetailFeature",
                 .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
             ]
@@ -69,6 +76,7 @@ let package = Package(
             name: "StoryListFeature",
             dependencies: [
                 "AppCore",
+                "Common",
                 .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
             ]
         ),

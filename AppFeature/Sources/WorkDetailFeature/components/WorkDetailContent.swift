@@ -1,10 +1,7 @@
 import AppCore
+import Common
 import ComposableArchitecture
 import SwiftUI
-
-#if os(macOS)
-    import AppKit
-#endif
 
 struct WorkDetailContent: View {
     let store: StoreOf<WorkDetailFeature>
@@ -80,15 +77,5 @@ struct DetailSection: View {
                 .lineSpacing(4)
                 .lineLimit(nil)
         }
-    }
-}
-
-extension Color {
-    static var workDetailBackground: Color {
-        #if os(macOS)
-            Color(nsColor: .textBackgroundColor)
-        #else
-            Color(.systemBackground)
-        #endif
     }
 }

@@ -1,10 +1,7 @@
 import AppCore
+import Common
 import ComposableArchitecture
 import SwiftUI
-
-#if os(macOS)
-    import AppKit
-#endif
 
 public struct CharacterDetailView: View {
     let store: StoreOf<CharacterDetailFeature>
@@ -86,16 +83,6 @@ private struct DetailSection: View {
                 .lineSpacing(4)
                 .lineLimit(nil)
         }
-    }
-}
-
-private extension Color {
-    static var characterDetailBackground: Color {
-        #if os(macOS)
-            Color(nsColor: .textBackgroundColor)
-        #else
-            Color(.systemBackground)
-        #endif
     }
 }
 
