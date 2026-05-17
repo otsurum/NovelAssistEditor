@@ -51,7 +51,7 @@ struct SelectedWorkContentView: View {
     }
 
     private var headerTitle: String {
-        "\(detailStore.work.title)　>　\(store.selectedWorkContent.title)"
+        "\(detailStore.work.title)　＞　\(store.selectedWorkContent.title)"
     }
 }
 
