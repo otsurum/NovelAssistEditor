@@ -1,6 +1,7 @@
 import AppCore
 import ComposableArchitecture
 import Foundation
+import TextEditorFeature
 
 @Reducer
 public struct StoryListFeature {
@@ -9,6 +10,7 @@ public struct StoryListFeature {
         public var work: Work
         public var isShowingCreateModal = false
         public var createForm = CreateChapterFormState()
+        public var textEditor: TextEditorFeature.State?
 
         public init(work: Work) {
             self.work = work
@@ -21,10 +23,12 @@ public struct StoryListFeature {
         case updateCreateFormTitle(String)
         case submitCreate
         case chapterTapped(Chapter.ID)
+        case textEditor(TextEditorFeature.Action)
         case delegate(Delegate)
 
         public enum Delegate: Equatable {
             case chapterCreated(Chapter)
+            case chapterBodyUpdated(Chapter)
         }
     }
 
@@ -55,12 +59,32 @@ public struct StoryListFeature {
                 state.createForm = CreateChapterFormState()
                 return .send(.delegate(.chapterCreated(chapter)))
 
-            case .chapterTapped:
+            case let .chapterTapped(chapterID):
+                guard let chapter = state.work.story.chapters.first(where: { $0.id == chapterID }) else {
+                    return .none
+                }
+                state.textEditor = TextEditorFeature.State(chapter: chapter)
+                return .none
+
+            case let .textEditor(.delegate(.bodyUpdated(chapter))):
+                if let index = state.work.story.chapters.firstIndex(where: { $0.id == chapter.id }) {
+                    state.work.story.chapters[index] = chapter
+                }
+                return .send(.delegate(.chapterBodyUpdated(chapter)))
+
+            case .textEditor(.delegate(.closeEditor)):
+                state.textEditor = nil
+                return .none
+
+            case .textEditor:
                 return .none
 
             case .delegate:
                 return .none
             }
+        }
+        .ifLet(\.textEditor, action: \.textEditor) {
+            TextEditorFeature()
         }
     }
 }

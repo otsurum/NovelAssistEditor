@@ -19,6 +19,13 @@ public struct TextEditorView: View {
         }
         .navigationTitle(store.chapter.episodeTitle)
         .toolbar {
+            ToolbarItem(placement: .cancellationAction) {
+                Button {
+                    store.send(.close)
+                } label: {
+                    Label("一覧に戻る", systemImage: "chevron.left")
+                }
+            }
             ToolbarItem(placement: .primaryAction) {
                 Button {
                     store.send(.toggleEditorVisibility)

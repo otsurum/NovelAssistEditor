@@ -77,6 +77,7 @@ let package = Package(
             dependencies: [
                 "AppCore",
                 "Extension",
+                "TextEditorFeature",
                 .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
             ]
         ),

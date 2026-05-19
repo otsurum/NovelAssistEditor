@@ -14,17 +14,19 @@ public struct TextEditorFeature {
         public init(chapter: Chapter) {
             self.chapter = chapter
             self.rawText = chapter.body
-            self.manuscriptBody = ManuscriptBody(text: chapter.body)
+            self.manuscriptBody = chapter.manuscriptBody
         }
     }
 
     public enum Action: Equatable {
+        case close
         case textChanged(String)
         case toggleEditorVisibility
         case delegate(Delegate)
 
         public enum Delegate: Equatable {
             case bodyUpdated(Chapter)
+            case closeEditor
         }
     }
 
@@ -33,6 +35,9 @@ public struct TextEditorFeature {
     public var body: some ReducerOf<Self> {
         Reduce { state, action in
             switch action {
+            case .close:
+                return .send(.delegate(.closeEditor))
+
             case let .textChanged(text):
                 state.rawText = text
                 state.manuscriptBody = ManuscriptBody(text: text)
