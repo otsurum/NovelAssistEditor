@@ -1,6 +1,7 @@
 import AppCore
 import CharacterDetailFeature
 import ComposableArchitecture
+import Extension
 import Foundation
 
 @Reducer

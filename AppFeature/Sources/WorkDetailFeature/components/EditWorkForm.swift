@@ -1,5 +1,6 @@
 import AppCore
 import ComposableArchitecture
+import Extension
 import SwiftUI
 
 struct EditWorkForm: View {
@@ -137,13 +138,5 @@ struct ErrorBanner: View {
             Spacer(minLength: 0)
         }
         .padding(10)
-    }
-}
-
-extension View {
-    func workEditorStyle(minHeight: CGFloat = 88) -> some View {
-        scrollContentBackground(.hidden)
-            .frame(minHeight: minHeight)
-            .padding(8)
     }
 }

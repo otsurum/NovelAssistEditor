@@ -1,5 +1,5 @@
 import AppCore
-import Common
+import Extension
 import SwiftUI
 
 struct CharacterCard: View {

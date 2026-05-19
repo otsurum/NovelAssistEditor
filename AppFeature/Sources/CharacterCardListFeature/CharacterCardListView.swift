@@ -1,6 +1,6 @@
 import AppCore
 import CharacterDetailFeature
-import Common
+import Extension
 import ComposableArchitecture
 import SwiftUI
 
