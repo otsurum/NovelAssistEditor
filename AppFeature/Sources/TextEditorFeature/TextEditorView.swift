@@ -1,6 +1,11 @@
 import AppCore
 import ComposableArchitecture
+import Extension
 import SwiftUI
+
+#if os(macOS)
+    import AppKit
+#endif
 
 public struct TextEditorView: View {
     @Bindable var store: StoreOf<TextEditorFeature>
@@ -10,77 +15,94 @@ public struct TextEditorView: View {
     }
 
     public var body: some View {
-        VStack(spacing: 0) {
-            manuscriptDisplay
-            if store.isEditorVisible {
-                Divider()
-                editorPanel
+        GeometryReader { proxy in
+            let workspaceHeight = max(0, proxy.size.height - TextEditorStatusBarView.height)
+            let workspaceSize = CGSize(width: proxy.size.width, height: workspaceHeight)
+            let viewportWidth = TextEditorWritingAreaView.viewportWidth(for: workspaceSize)
+
+            VStack(spacing: 0) {
+                TextEditorWritingAreaView(
+                    size: workspaceSize,
+                    manuscriptBody: store.manuscriptBody,
+                    text: Binding(
+                        get: { store.rawText },
+                        set: { store.send(.textChanged($0)) }
+                    ),
+                    isEditorVisible: store.isEditorVisible,
+                    focusRequestID: store.focusRequestID
+                )
+                .frame(width: workspaceSize.width, height: workspaceSize.height)
+
+                TextEditorStatusBarView(
+                    cursorLine: cursorLine,
+                    cursorColumn: cursorColumn,
+                    characterCount: store.rawText.count,
+                    viewportWidth: viewportWidth
+                )
             }
         }
-        .navigationTitle(store.chapter.episodeTitle)
+        .navigationTitle(documentTitle)
+        .background(Color.manuscriptViewBackground)
         .toolbar {
-            ToolbarItem(placement: .cancellationAction) {
+            ToolbarItem(placement: .navigation) {
                 Button {
                     store.send(.close)
                 } label: {
-                    Label("一覧に戻る", systemImage: "chevron.left")
+                    Label("戻る", systemImage: "chevron.left")
                 }
+                .help("戻る")
             }
-            ToolbarItem(placement: .primaryAction) {
-                Button {
+
+            ToolbarItemGroup(placement: .primaryAction) {
+                TextEditorToolbarButton(title: "入力", systemImage: "keyboard") {
+                    store.send(.focusEditor)
+                }
+
+                TextEditorToolbarButton(title: "保存", systemImage: "square.and.arrow.down") {
+                    store.send(.textChanged(store.rawText))
+                }
+                TextEditorToolbarButton(title: "取り消し", systemImage: "arrow.uturn.backward") {
+                    sendTextAction(Selector(("undo:")))
+                }
+                TextEditorToolbarButton(title: "やり直し", systemImage: "arrow.uturn.forward") {
+                    sendTextAction(Selector(("redo:")))
+                }
+                TextEditorToolbarButton(title: "コピー", systemImage: "doc.on.doc") {
+                    sendTextAction(#selector(NSText.copy(_:)))
+                }
+                TextEditorToolbarButton(title: "検索", systemImage: "magnifyingglass") {
+                    sendTextAction(#selector(NSResponder.performTextFinderAction(_:)))
+                }
+                TextEditorToolbarButton(title: "マーク", systemImage: "bookmark") {}
+                TextEditorToolbarButton(title: "情報", systemImage: "info.circle") {}
+                TextEditorToolbarButton(title: "フォーム", systemImage: "list.bullet.rectangle") {}
+                TextEditorToolbarButton(
+                    title: store.isEditorVisible ? "読取専用" : "編集",
+                    systemImage: store.isEditorVisible ? "eye" : "pencil"
+                ) {
                     store.send(.toggleEditorVisibility)
-                } label: {
-                    Label(
-                        store.isEditorVisible ? "入力欄を隠す" : "入力欄を表示",
-                        systemImage: store.isEditorVisible ? "rectangle.bottomthird.inset.filled" : "pencil"
-                    )
                 }
             }
         }
     }
 
-    private var manuscriptDisplay: some View {
-        ScrollView(.horizontal, showsIndicators: true) {
-            HStack(alignment: .top, spacing: 24) {
-                if store.manuscriptBody.pages.isEmpty {
-                    ManuscriptPageGridView(lines: [], pageNumber: 1)
-                } else {
-                    ForEach(Array(store.manuscriptBody.pages.enumerated()), id: \.element.id) { index, page in
-                        ManuscriptPageGridView(lines: page.lines, pageNumber: index + 1)
-                    }
-                }
-            }
-            .padding(24)
-        }
-        .environment(\.layoutDirection, .rightToLeft)
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color.manuscriptViewBackground)
+    private func sendTextAction(_ selector: Selector) {
+        #if os(macOS)
+            NSApp.sendAction(selector, to: nil, from: nil)
+        #endif
     }
 
-    private var editorPanel: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            HStack {
-                Text("本文入力")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                Spacer()
-                Text("\(store.rawText.count)文字 ・ \(store.manuscriptBody.lineCount)行 ・ \(store.manuscriptBody.pageCount)ページ")
-                    .font(.caption.monospacedDigit())
-                    .foregroundStyle(.secondary)
-            }
-            .padding(.horizontal, 12)
-            .padding(.vertical, 6)
+    private var documentTitle: String {
+        store.chapter.episodeTitle.isEmpty ? "名称未設定" : store.chapter.episodeTitle
+    }
 
-            TextEditor(text: Binding(
-                get: { store.rawText },
-                set: { store.send(.textChanged($0)) }
-            ))
-            .font(.body)
-            .frame(height: 160)
-            .padding(.horizontal, 8)
-            .padding(.bottom, 8)
-        }
-        .background(Color.manuscriptEditorBackground)
+    private var cursorLine: Int {
+        max(store.manuscriptBody.lineCount, 1)
+    }
+
+    private var cursorColumn: Int {
+        guard let lastLine = store.manuscriptBody.lines.last else { return 1 }
+        return min(lastLine.text.count + 1, ManuscriptLine.maxCharacterCount)
     }
 }
 

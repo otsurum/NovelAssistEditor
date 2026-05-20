@@ -10,16 +10,18 @@ public struct TextEditorFeature {
         public var manuscriptBody: ManuscriptBody
         public var rawText: String
         public var isEditorVisible: Bool = true
+        public var focusRequestID = 0
 
         public init(chapter: Chapter) {
             self.chapter = chapter
-            self.rawText = chapter.body
-            self.manuscriptBody = chapter.manuscriptBody
+            rawText = chapter.body
+            manuscriptBody = chapter.manuscriptBody
         }
     }
 
     public enum Action: Equatable {
         case close
+        case focusEditor
         case textChanged(String)
         case toggleEditorVisibility
         case delegate(Delegate)
@@ -37,6 +39,11 @@ public struct TextEditorFeature {
             switch action {
             case .close:
                 return .send(.delegate(.closeEditor))
+
+            case .focusEditor:
+                state.isEditorVisible = true
+                state.focusRequestID += 1
+                return .none
 
             case let .textChanged(text):
                 state.rawText = text
