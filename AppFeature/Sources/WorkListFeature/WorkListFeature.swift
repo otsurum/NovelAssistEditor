@@ -54,6 +54,7 @@ public struct WorkListFeature {
         case createWorkFailed(message: String)
         case createCharacterResponse(Result<Work, FailureReason>)
         case createChapterResponse(Result<Work, FailureReason>)
+        case updateChapterBodyResponse(Result<Work, FailureReason>)
         case workTapped(Work)
         case sidebarSelectionChanged(SidebarSelection?)
         case workContentSelectionChanged(WorkContentSelection?)
@@ -73,6 +74,11 @@ public struct WorkListFeature {
     }
 
     @Dependency(\.workListClient) var workListClient
+
+    private struct ChapterBodySaveID: Hashable {
+        let workID: Work.ID
+        let chapterID: Chapter.ID
+    }
 
     public init() {}
 
@@ -185,6 +191,37 @@ public struct WorkListFeature {
                     }
                 }
 
+            case let .storyList(.delegate(.chapterBodySaveRequested(chapter))):
+                guard
+                    case let .work(id) = state.selectedSidebarItem,
+                    let work = state.works.first(where: { $0.id == id }),
+                    let chapterIndex = work.story.chapters.firstIndex(where: { $0.id == chapter.id })
+                else {
+                    return .none
+                }
+
+                var updatedWork = work
+                updatedWork.story.chapters[chapterIndex] = chapter
+                updatedWork.updatedAt = .now
+                let workToSave = updatedWork
+                let saveID = ChapterBodySaveID(workID: id, chapterID: chapter.id)
+                state.updateWorkInList(workToSave)
+                state.storyList?.work = workToSave
+                if state.detail?.isEditing != true {
+                    state.detail = WorkDetailFeature.State(work: workToSave)
+                }
+                state.errorMessage = nil
+
+                return .run { [workListClient] send in
+                    do {
+                        try await workListClient.update(workToSave)
+                        await send(.updateChapterBodyResponse(.success(workToSave)))
+                    } catch {
+                        await send(.updateChapterBodyResponse(.failure(FailureReason(error.localizedDescription))))
+                    }
+                }
+                .cancellable(id: saveID, cancelInFlight: true)
+
             case .storyList:
                 return .none
 
@@ -205,6 +242,30 @@ public struct WorkListFeature {
                 return .none
 
             case let .createChapterResponse(.failure(reason)):
+                state.errorMessage = reason.message
+                return .none
+
+            case let .updateChapterBodyResponse(.success(updatedWork)):
+                if
+                    let editingChapter = state.storyList?.textEditor?.chapter,
+                    let savedChapter = updatedWork.story.chapters.first(where: { $0.id == editingChapter.id }),
+                    savedChapter.body != editingChapter.body
+                {
+                    return .none
+                }
+
+                state.updateWorkInList(updatedWork)
+                if state.selectedSidebarItem == .work(updatedWork.id) {
+                    state.storyList?.work = updatedWork
+                    state.characterCardList?.characters = updatedWork.characters
+                    if state.detail?.isEditing != true {
+                        state.detail = WorkDetailFeature.State(work: updatedWork)
+                    }
+                }
+                state.errorMessage = nil
+                return .none
+
+            case let .updateChapterBodyResponse(.failure(reason)):
                 state.errorMessage = reason.message
                 return .none
 

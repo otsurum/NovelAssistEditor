@@ -59,7 +59,7 @@ public struct TextEditorView: View {
                 }
 
                 TextEditorToolbarButton(title: "保存", systemImage: "square.and.arrow.down") {
-                    store.send(.textChanged(store.rawText))
+                    store.send(.save)
                 }
                 TextEditorToolbarButton(title: "取り消し", systemImage: "arrow.uturn.backward") {
                     sendTextAction(Selector(("undo:")))

@@ -29,6 +29,7 @@ public struct StoryListFeature {
         public enum Delegate: Equatable {
             case chapterCreated(Chapter)
             case chapterBodyUpdated(Chapter)
+            case chapterBodySaveRequested(Chapter)
         }
     }
 
@@ -71,6 +72,12 @@ public struct StoryListFeature {
                     state.work.story.chapters[index] = chapter
                 }
                 return .send(.delegate(.chapterBodyUpdated(chapter)))
+
+            case let .textEditor(.delegate(.saveRequested(chapter))):
+                if let index = state.work.story.chapters.firstIndex(where: { $0.id == chapter.id }) {
+                    state.work.story.chapters[index] = chapter
+                }
+                return .send(.delegate(.chapterBodySaveRequested(chapter)))
 
             case .textEditor(.delegate(.closeEditor)):
                 state.textEditor = nil
