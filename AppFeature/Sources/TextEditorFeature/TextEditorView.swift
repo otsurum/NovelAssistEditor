@@ -36,7 +36,7 @@ public struct TextEditorView: View {
                 TextEditorStatusBarView(
                     cursorLine: cursorLine,
                     cursorColumn: cursorColumn,
-                    characterCount: store.rawText.count,
+                    characterCount: store.manuscriptBody.characterCount,
                     viewportWidth: viewportWidth
                 )
             }
