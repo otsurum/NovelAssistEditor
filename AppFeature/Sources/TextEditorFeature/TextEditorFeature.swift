@@ -109,7 +109,7 @@ public struct TextEditorFeature {
         guard state.rawText != text else { return false }
 
         state.rawText = text
-        state.manuscriptBody = ManuscriptBody(text: text)
+        state.manuscriptBody = state.manuscriptBody.replacingText(text)
         state.chapter.body = text
         return true
     }

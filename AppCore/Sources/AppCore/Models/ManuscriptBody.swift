@@ -27,7 +27,11 @@ public struct ManuscriptLine: Identifiable, Equatable, Sendable {
     }
 
     fileprivate init(uncheckedText text: String) {
-        id = UUID()
+        self.init(id: UUID(), uncheckedText: text)
+    }
+
+    fileprivate init(id: UUID, uncheckedText text: String) {
+        self.id = id
         self.text = text
     }
 }
@@ -65,7 +69,11 @@ public struct ManuscriptPage: Identifiable, Equatable, Sendable {
     }
 
     fileprivate init(uncheckedLines lines: [ManuscriptLine]) {
-        id = UUID()
+        self.init(id: UUID(), uncheckedLines: lines)
+    }
+
+    fileprivate init(id: UUID, uncheckedLines lines: [ManuscriptLine]) {
+        self.id = id
         self.lines = lines
     }
 }
@@ -90,6 +98,13 @@ public struct ManuscriptBody: Identifiable, Equatable, Sendable {
         pages = Self.paginate(text)
     }
 
+    public func replacingText(_ text: String) -> ManuscriptBody {
+        ManuscriptBody(
+            id: id,
+            pages: Self.paginate(text, reusingIDsFrom: pages)
+        )
+    }
+
     public var pageCount: Int {
         pages.count
     }
@@ -111,22 +126,39 @@ public struct ManuscriptBody: Identifiable, Equatable, Sendable {
         pages.append(page)
     }
 
-    private static func paginate(_ text: String) -> [ManuscriptPage] {
-        let lines = wrappedLines(from: text)
-        guard !lines.isEmpty else { return [] }
+    private static func paginate(
+        _ text: String,
+        reusingIDsFrom existingPages: [ManuscriptPage] = []
+    ) -> [ManuscriptPage] {
+        let lineTexts = wrappedLineTexts(from: text)
+        guard !lineTexts.isEmpty else { return [] }
 
-        return lines
+        return lineTexts
             .chunked(maxLength: ManuscriptPage.maxLineCount)
-            .map(ManuscriptPage.init(uncheckedLines:))
+            .enumerated()
+            .map { pageIndex, lineTexts in
+                let existingPage = existingPages[safe: pageIndex]
+                let existingLines = existingPage?.lines ?? []
+                let lines = lineTexts.enumerated().map { lineIndex, text in
+                    ManuscriptLine(
+                        id: existingLines[safe: lineIndex]?.id ?? UUID(),
+                        uncheckedText: text
+                    )
+                }
+
+                return ManuscriptPage(
+                    id: existingPage?.id ?? UUID(),
+                    uncheckedLines: lines
+                )
+            }
     }
 
-    private static func wrappedLines(from text: String) -> [ManuscriptLine] {
+    private static func wrappedLineTexts(from text: String) -> [String] {
         text
             .split(separator: "\n", omittingEmptySubsequences: false)
             .flatMap { logicalLine in
                 String(logicalLine)
                     .chunked(maxLength: ManuscriptLine.maxCharacterCount)
-                    .map(ManuscriptLine.init(uncheckedText:))
             }
     }
 }
@@ -153,6 +185,10 @@ private extension String {
 }
 
 private extension Array {
+    subscript(safe index: Int) -> Element? {
+        indices.contains(index) ? self[index] : nil
+    }
+
     func chunked(maxLength: Int) -> [[Element]] {
         guard !isEmpty else { return [] }
 

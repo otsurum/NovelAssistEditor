@@ -6,7 +6,7 @@ public struct Chapter: Identifiable, Equatable, Sendable {
     public var body: String
 
     public var manuscriptBody: ManuscriptBody {
-        ManuscriptBody(text: body)
+        ManuscriptBody(id: id, text: body)
     }
 
     public init(
