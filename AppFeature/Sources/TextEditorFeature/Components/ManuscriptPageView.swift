@@ -34,9 +34,11 @@ struct ManuscriptPageGridView: View {
     }
 
     private func columnView(at colIndex: Int) -> some View {
-        VStack(spacing: 0) {
+        let characters = characters(in: colIndex)
+
+        return VStack(spacing: 0) {
             ForEach(0..<rowCount, id: \.self) { rowIndex in
-                Text(character(column: colIndex, row: rowIndex))
+                Text(rowIndex < characters.count ? characters[rowIndex] : "")
                     .font(.system(size: cellSize * 0.72))
                     .foregroundStyle(Color.primary)
                     .frame(width: cellSize, height: cellSize)
@@ -45,10 +47,8 @@ struct ManuscriptPageGridView: View {
         }
     }
 
-    private func character(column: Int, row: Int) -> String {
-        guard column < lines.count else { return "" }
-        let chars = Array(lines[column].text)
-        guard row < chars.count else { return "" }
-        return String(chars[row])
+    private func characters(in column: Int) -> [String] {
+        guard column < lines.count else { return [] }
+        return lines[column].text.map(String.init)
     }
 }
