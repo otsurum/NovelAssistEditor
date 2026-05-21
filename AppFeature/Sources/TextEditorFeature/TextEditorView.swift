@@ -9,6 +9,7 @@ import SwiftUI
 
 public struct TextEditorView: View {
     @Bindable var store: StoreOf<TextEditorFeature>
+    @State private var commitController = TextInputCommitController()
 
     public init(store: StoreOf<TextEditorFeature>) {
         self.store = store
@@ -29,7 +30,9 @@ public struct TextEditorView: View {
                         set: { store.send(.textChanged($0)) }
                     ),
                     isEditorVisible: store.isEditorVisible,
-                    focusRequestID: store.focusRequestID
+                    focusRequestID: store.focusRequestID,
+                    commitController: commitController,
+                    commitText: { store.send(.textEditingCommitted($0)) }
                 )
                 .frame(width: workspaceSize.width, height: workspaceSize.height)
 
@@ -46,6 +49,7 @@ public struct TextEditorView: View {
         .toolbar {
             ToolbarItem(placement: .navigation) {
                 Button {
+                    commitController.commitEditing()
                     store.send(.close)
                 } label: {
                     Label("戻る", systemImage: "chevron.left")
@@ -59,6 +63,7 @@ public struct TextEditorView: View {
                 }
 
                 TextEditorToolbarButton(title: "保存", systemImage: "square.and.arrow.down") {
+                    commitController.commitEditing()
                     store.send(.save)
                 }
                 TextEditorToolbarButton(title: "取り消し", systemImage: "arrow.uturn.backward") {
@@ -80,6 +85,7 @@ public struct TextEditorView: View {
                     title: store.isEditorVisible ? "読取専用" : "編集",
                     systemImage: store.isEditorVisible ? "eye" : "pencil"
                 ) {
+                    commitController.commitEditing()
                     store.send(.toggleEditorVisibility)
                 }
             }

@@ -10,6 +10,8 @@ struct TextEditorWritingAreaView: View {
     @Binding var text: String
     let isEditorVisible: Bool
     let focusRequestID: Int
+    let commitController: TextInputCommitController
+    let commitText: (String) -> Void
 
     static func viewportWidth(for size: CGSize) -> CGFloat {
         max(0, size.width - rulerWidth)
@@ -53,7 +55,9 @@ struct TextEditorWritingAreaView: View {
                     isEditable: isEditorVisible,
                     focusRequestID: focusRequestID,
                     lineLength: CGFloat(ManuscriptLine.maxCharacterCount) * lineHeight,
-                    fontSize: fontSize
+                    fontSize: fontSize,
+                    commitController: commitController,
+                    commitText: commitText
                 )
                 .frame(width: writingWidth, height: writingHeight)
                 .offset(y: firstCharacterTopOffset)

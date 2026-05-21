@@ -24,6 +24,7 @@ public struct TextEditorFeature {
         case close
         case focusEditor
         case save
+        case textEditingCommitted(String)
         case textChanged(String)
         case toggleEditorVisibility
         case delegate(Delegate)
@@ -65,10 +66,24 @@ public struct TextEditorFeature {
             case .save:
                 return .send(.delegate(.saveRequested(state.chapter)))
 
+            case let .textEditingCommitted(text):
+                let didChange = updateText(text, in: &state)
+                let chapter = state.chapter
+                var effects: [Effect<Action>] = [
+                    .cancel(id: CancelID.autoSave),
+                ]
+
+                if didChange {
+                    effects.append(.send(.delegate(.bodyUpdated(chapter))))
+                }
+                effects.append(.send(.delegate(.saveRequested(chapter))))
+
+                return .concatenate(effects)
+
             case let .textChanged(text):
-                state.rawText = text
-                state.manuscriptBody = ManuscriptBody(text: text)
-                state.chapter.body = text
+                guard updateText(text, in: &state) else {
+                    return .none
+                }
                 let chapter = state.chapter
                 let clock = self.clock
                 return .merge(
@@ -88,5 +103,14 @@ public struct TextEditorFeature {
                 return .none
             }
         }
+    }
+
+    private func updateText(_ text: String, in state: inout State) -> Bool {
+        guard state.rawText != text else { return false }
+
+        state.rawText = text
+        state.manuscriptBody = ManuscriptBody(text: text)
+        state.chapter.body = text
+        return true
     }
 }
