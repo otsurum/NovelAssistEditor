@@ -37,9 +37,7 @@ final class TextInputCommitController {
             textView.allowsUndo = true
             textView.isEditable = isEditable
             textView.isSelectable = true
-            textView.textColor = .white
-            textView.insertionPointColor = .white
-            textView.typingAttributes[.foregroundColor] = NSColor.white
+            configureTextColors(textView)
             textView.font = manuscriptFont
             textView.layoutManager?.usesFontLeading = false
             textView.textContainerInset = .zero
@@ -78,9 +76,7 @@ final class TextInputCommitController {
             }
 
             textView.isEditable = isEditable
-            textView.textColor = .white
-            textView.insertionPointColor = .white
-            textView.typingAttributes[.foregroundColor] = NSColor.white
+            configureTextColors(textView)
             textView.font = manuscriptFont
             textView.layoutManager?.usesFontLeading = false
             textView.textContainerInset = .zero
@@ -109,6 +105,12 @@ final class TextInputCommitController {
         private var manuscriptFont: NSFont {
             NSFont(name: "Hiragino Mincho ProN", size: fontSize)
                 ?? NSFont.systemFont(ofSize: fontSize)
+        }
+
+        private func configureTextColors(_ textView: NSTextView) {
+            textView.textColor = .textColor
+            textView.insertionPointColor = .textColor
+            textView.typingAttributes[.foregroundColor] = NSColor.textColor
         }
 
         @MainActor
@@ -245,7 +247,7 @@ final class TextInputCommitController {
             TextEditor(text: $text)
                 .disabled(!isEditable)
                 .font(.system(size: fontSize))
-                .foregroundStyle(.white)
+                .foregroundStyle(.primary)
                 .onDisappear {
                     commitText(text)
                 }

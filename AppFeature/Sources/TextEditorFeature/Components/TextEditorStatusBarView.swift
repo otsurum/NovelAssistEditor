@@ -22,6 +22,5 @@ struct TextEditorStatusBarView: View {
         .frame(height: Self.height)
         .foregroundStyle(.white.opacity(0.82))
         .background(Color.manuscriptStatusBarBackground)
-        .accessibilityValue("viewportWidth: \(Int(viewportWidth))")
     }
 }
