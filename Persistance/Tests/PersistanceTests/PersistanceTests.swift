@@ -1,6 +1,7 @@
 import AppCore
 import Foundation
 @testable import Persistance
+import SwiftData
 import Testing
 
 @MainActor
@@ -208,6 +209,86 @@ import Testing
     try client.delete(id: body.id)
 
     #expect(try client.fetchAll().isEmpty)
+}
+
+@MainActor
+@Test func manuscriptBodyClientDeletesRemovedPagesAndLinesDuringUpdate() throws {
+    let container = try ModelContainerFactory.makeShared(inMemoryOnly: true)
+    let client = ManuscriptBodyClient(modelContext: container.mainContext)
+
+    let bodyID = try #require(UUID(uuidString: "00000000-0000-0000-0000-000000000703"))
+    let firstPageID = try #require(UUID(uuidString: "00000000-0000-0000-0000-000000000611"))
+    let removedPageID = try #require(UUID(uuidString: "00000000-0000-0000-0000-000000000612"))
+    let addedPageID = try #require(UUID(uuidString: "00000000-0000-0000-0000-000000000613"))
+    let removedLineID = try #require(UUID(uuidString: "00000000-0000-0000-0000-000000000511"))
+    let keptLineID = try #require(UUID(uuidString: "00000000-0000-0000-0000-000000000512"))
+    let removedPageLineID = try #require(UUID(uuidString: "00000000-0000-0000-0000-000000000513"))
+    let addedLineID = try #require(UUID(uuidString: "00000000-0000-0000-0000-000000000514"))
+
+    let body = try ManuscriptBody(
+        id: bodyID,
+        pages: [
+            ManuscriptPage(
+                id: firstPageID,
+                lines: [
+                    ManuscriptLine(id: removedLineID, text: "あとで戻す行"),
+                    ManuscriptLine(id: keptLineID, text: "残る行"),
+                ]
+            ),
+            ManuscriptPage(
+                id: removedPageID,
+                lines: [
+                    ManuscriptLine(id: removedPageLineID, text: "あとで戻すページの行"),
+                ]
+            ),
+        ]
+    )
+    try client.create(body)
+
+    let bodyWithoutOldRecords = try ManuscriptBody(
+        id: bodyID,
+        pages: [
+            ManuscriptPage(
+                id: firstPageID,
+                lines: [
+                    ManuscriptLine(id: keptLineID, text: "残る行を改稿"),
+                ]
+            ),
+            ManuscriptPage(
+                id: addedPageID,
+                lines: [
+                    ManuscriptLine(id: addedLineID, text: "追加した行"),
+                ]
+            ),
+        ]
+    )
+    try client.update(bodyWithoutOldRecords)
+
+    #expect(try container.mainContext.fetch(FetchDescriptor<ManuscriptPageEntity>()).count == 2)
+    #expect(try container.mainContext.fetch(FetchDescriptor<ManuscriptLineEntity>()).count == 2)
+
+    let bodyReusingRemovedIDs = try ManuscriptBody(
+        id: bodyID,
+        pages: [
+            ManuscriptPage(
+                id: firstPageID,
+                lines: [
+                    ManuscriptLine(id: removedLineID, text: "戻した行"),
+                ]
+            ),
+            ManuscriptPage(
+                id: removedPageID,
+                lines: [
+                    ManuscriptLine(id: removedPageLineID, text: "戻したページの行"),
+                ]
+            ),
+        ]
+    )
+    try client.update(bodyReusingRemovedIDs)
+
+    #expect(try client.fetch(id: bodyID) == bodyReusingRemovedIDs)
+    #expect(try container.mainContext.fetch(FetchDescriptor<ManuscriptPageEntity>()).count == 2)
+    #expect(try container.mainContext.fetch(FetchDescriptor<ManuscriptLineEntity>()).count == 2)
 }
 
 @MainActor

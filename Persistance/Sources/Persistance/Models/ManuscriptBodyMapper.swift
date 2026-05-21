@@ -1,5 +1,6 @@
 import AppCore
 import Foundation
+import SwiftData
 
 enum ManuscriptBodyMapper {
     static func toDomain(_ entity: ManuscriptBodyEntity) throws -> ManuscriptBody {
@@ -20,18 +21,22 @@ enum ManuscriptBodyMapper {
         )
     }
 
-    static func apply(_ body: ManuscriptBody, to entity: ManuscriptBodyEntity) {
+    static func apply(_ body: ManuscriptBody, to entity: ManuscriptBodyEntity, in modelContext: ModelContext) {
         var existingPagesByID = Dictionary(
             uniqueKeysWithValues: entity.pages.map { ($0.id, $0) }
         )
 
         entity.pages = body.pages.enumerated().map { index, page in
             if let existingPage = existingPagesByID.removeValue(forKey: page.id) {
-                ManuscriptPageMapper.apply(page, position: index, to: existingPage)
+                ManuscriptPageMapper.apply(page, position: index, to: existingPage, in: modelContext)
                 return existingPage
             }
 
             return ManuscriptPageMapper.toEntity(page, position: index)
+        }
+
+        for unusedPage in existingPagesByID.values {
+            ManuscriptPageMapper.delete(unusedPage, in: modelContext)
         }
     }
 }
@@ -56,7 +61,12 @@ enum ManuscriptPageMapper {
         )
     }
 
-    static func apply(_ page: ManuscriptPage, position: Int, to entity: ManuscriptPageEntity) {
+    static func apply(
+        _ page: ManuscriptPage,
+        position: Int,
+        to entity: ManuscriptPageEntity,
+        in modelContext: ModelContext
+    ) {
         entity.position = position
 
         var existingLinesByID = Dictionary(
@@ -71,6 +81,17 @@ enum ManuscriptPageMapper {
 
             return ManuscriptLineMapper.toEntity(line, position: index)
         }
+
+        for unusedLine in existingLinesByID.values {
+            modelContext.delete(unusedLine)
+        }
+    }
+
+    static func delete(_ page: ManuscriptPageEntity, in modelContext: ModelContext) {
+        for line in page.lines {
+            modelContext.delete(line)
+        }
+        modelContext.delete(page)
     }
 }
 

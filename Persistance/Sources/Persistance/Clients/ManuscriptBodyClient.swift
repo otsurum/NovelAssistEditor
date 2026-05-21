@@ -27,7 +27,7 @@ public final class ManuscriptBodyClient: ManuscriptBodyRepository {
 
     public func update(_ body: ManuscriptBody) throws {
         let entity = try fetchEntity(id: body.id)
-        ManuscriptBodyMapper.apply(body, to: entity)
+        ManuscriptBodyMapper.apply(body, to: entity, in: modelContext)
         try modelContext.save()
     }
 
