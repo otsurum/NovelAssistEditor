@@ -4,9 +4,9 @@ import SwiftData
 
 enum ManuscriptBodyMapper {
     static func toDomain(_ entity: ManuscriptBodyEntity) throws -> ManuscriptBody {
-        ManuscriptBody(
+        try ManuscriptBody(
             id: entity.id,
-            pages: try entity.pages
+            pages: entity.pages
                 .sorted { $0.position < $1.position }
                 .map(ManuscriptPageMapper.toDomain)
         )

@@ -1,6 +1,6 @@
 import AppCore
-import Extension
 import ComposableArchitecture
+import Extension
 import SwiftUI
 
 public struct CharacterDetailView: View {

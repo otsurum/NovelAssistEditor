@@ -170,8 +170,8 @@ import Testing
         id: #require(UUID(uuidString: "00000000-0000-0000-0000-000000000601")),
         lines: [firstLine, secondLine]
     )
-    let body = ManuscriptBody(
-        id: try #require(UUID(uuidString: "00000000-0000-0000-0000-000000000701")),
+    let body = try ManuscriptBody(
+        id: #require(UUID(uuidString: "00000000-0000-0000-0000-000000000701")),
         pages: [firstPage]
     )
 
@@ -299,8 +299,8 @@ import Testing
         repeating: "あ",
         count: ManuscriptLine.maxCharacterCount * ManuscriptPage.maxLineCount + 1
     )
-    let body = ManuscriptBody(
-        id: try #require(UUID(uuidString: "00000000-0000-0000-0000-000000000702")),
+    let body = try ManuscriptBody(
+        id: #require(UUID(uuidString: "00000000-0000-0000-0000-000000000702")),
         text: text
     )
 

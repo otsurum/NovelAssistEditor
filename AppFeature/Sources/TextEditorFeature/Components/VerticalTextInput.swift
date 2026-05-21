@@ -222,12 +222,12 @@ final class TextInputCommitController {
                 commitText(committedText)
             }
 
-            @objc private func windowDidResignKey(_ notification: Notification) {
+            @objc private func windowDidResignKey(_: Notification) {
                 guard let textView else { return }
                 commitEditing(from: textView)
             }
 
-            @objc private func applicationWillResignActive(_ notification: Notification) {
+            @objc private func applicationWillResignActive(_: Notification) {
                 guard let textView else { return }
                 commitEditing(from: textView)
             }

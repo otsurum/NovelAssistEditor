@@ -21,7 +21,7 @@ struct ManuscriptPageGridView: View {
 
     private var pageGrid: some View {
         HStack(alignment: .top, spacing: 0) {
-            ForEach(0..<columnCount, id: \.self) { colIndex in
+            ForEach(0 ..< columnCount, id: \.self) { colIndex in
                 columnView(at: colIndex)
             }
         }
@@ -37,7 +37,7 @@ struct ManuscriptPageGridView: View {
         let characters = characters(in: colIndex)
 
         return VStack(spacing: 0) {
-            ForEach(0..<rowCount, id: \.self) { rowIndex in
+            ForEach(0 ..< rowCount, id: \.self) { rowIndex in
                 Text(rowIndex < characters.count ? characters[rowIndex] : "")
                     .font(.system(size: cellSize * 0.72))
                     .foregroundStyle(Color.primary)

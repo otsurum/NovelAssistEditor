@@ -113,7 +113,6 @@ public struct ManuscriptBody: Identifiable, Equatable, Sendable {
         pages.reduce(0) { $0 + $1.lines.count }
     }
 
-
     public var characterCount: Int {
         lines.reduce(0) { $0 + $1.text.count }
     }
