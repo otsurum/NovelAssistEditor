@@ -39,6 +39,8 @@ final class WorkListFeatureTests: XCTestCase {
         await store.send(.workTapped(work)) {
             $0.selectedSidebarItem = .work(work.id)
             $0.detail = WorkDetailFeature.State(work: work)
+            $0.characterCardList = .init(characters: work.characters)
+            $0.storyList = .init(work: work)
         }
     }
 
@@ -109,6 +111,8 @@ final class WorkListFeatureTests: XCTestCase {
             $0.selectedSidebarItem = .work(work.id)
             $0.selectedWorkContent = .general
             $0.detail = WorkDetailFeature.State(work: work)
+            $0.characterCardList = .init(characters: work.characters)
+            $0.storyList = .init(work: work)
         }
     }
 
@@ -145,6 +149,8 @@ final class WorkListFeatureTests: XCTestCase {
         await store.send(.createCharacterResponse(.success(updatedWork))) {
             $0.works = [updatedWork]
             $0.detail = WorkDetailFeature.State(work: updatedWork)
+            $0.characterCardList = .init(characters: updatedWork.characters)
+            $0.storyList = .init(work: updatedWork)
             $0.errorMessage = nil
         }
     }

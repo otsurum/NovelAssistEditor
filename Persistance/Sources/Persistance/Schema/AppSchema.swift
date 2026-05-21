@@ -6,6 +6,9 @@ public enum AppSchema {
     public static let models: [any PersistentModel.Type] = [
         CharacterEntity.self,
         ChapterEntity.self,
+        ManuscriptBodyEntity.self,
+        ManuscriptLineEntity.self,
+        ManuscriptPageEntity.self,
         StoryEntity.self,
         WorkEntity.self,
     ]

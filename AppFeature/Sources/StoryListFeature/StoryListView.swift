@@ -1,7 +1,8 @@
 import AppCore
-import Common
 import ComposableArchitecture
+import Extension
 import SwiftUI
+import TextEditorFeature
 
 public struct StoryListView: View {
     @Bindable var store: StoreOf<StoryListFeature>
@@ -16,6 +17,14 @@ public struct StoryListView: View {
     }
 
     public var body: some View {
+        if let textEditorStore = store.scope(state: \.textEditor, action: \.textEditor) {
+            TextEditorView(store: textEditorStore)
+        } else {
+            chapterList
+        }
+    }
+
+    private var chapterList: some View {
         Group {
             if store.work.story.chapters.isEmpty {
                 VStack(spacing: 14) {

@@ -1,7 +1,7 @@
 import AppCore
 import CharacterDetailFeature
-import Common
 import ComposableArchitecture
+import Extension
 import SwiftUI
 
 public struct CharacterCardListView: View {

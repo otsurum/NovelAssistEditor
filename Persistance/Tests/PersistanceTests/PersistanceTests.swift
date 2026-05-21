@@ -1,6 +1,7 @@
 import AppCore
 import Foundation
 @testable import Persistance
+import SwiftData
 import Testing
 
 @MainActor
@@ -150,4 +151,164 @@ import Testing
     try workClient.update(editedWork)
 
     #expect(try workClient.fetchAll() == [editedWork])
+}
+
+@MainActor
+@Test func manuscriptBodyClientCreatesFetchesUpdatesAndDeletesBody() throws {
+    let container = try ModelContainerFactory.makeShared(inMemoryOnly: true)
+    let client = ManuscriptBodyClient(modelContext: container.mainContext)
+
+    let firstLine = try ManuscriptLine(
+        id: #require(UUID(uuidString: "00000000-0000-0000-0000-000000000501")),
+        text: "最初の一行"
+    )
+    let secondLine = try ManuscriptLine(
+        id: #require(UUID(uuidString: "00000000-0000-0000-0000-000000000502")),
+        text: "二行目"
+    )
+    let firstPage = try ManuscriptPage(
+        id: #require(UUID(uuidString: "00000000-0000-0000-0000-000000000601")),
+        lines: [firstLine, secondLine]
+    )
+    let body = try ManuscriptBody(
+        id: #require(UUID(uuidString: "00000000-0000-0000-0000-000000000701")),
+        pages: [firstPage]
+    )
+
+    try client.create(body)
+
+    #expect(try client.fetch(id: body.id) == body)
+    #expect(try client.fetchAll() == [body])
+
+    let updatedSecondLine = try ManuscriptLine(
+        id: secondLine.id,
+        text: "二行目を改稿"
+    )
+    let addedLine = try ManuscriptLine(
+        id: #require(UUID(uuidString: "00000000-0000-0000-0000-000000000503")),
+        text: "追加した一行"
+    )
+    let updatedFirstPage = try ManuscriptPage(
+        id: firstPage.id,
+        lines: [updatedSecondLine, firstLine]
+    )
+    let addedPage = try ManuscriptPage(
+        id: #require(UUID(uuidString: "00000000-0000-0000-0000-000000000602")),
+        lines: [addedLine]
+    )
+    let updatedBody = ManuscriptBody(
+        id: body.id,
+        pages: [updatedFirstPage, addedPage]
+    )
+
+    try client.update(updatedBody)
+
+    #expect(try client.fetch(id: body.id) == updatedBody)
+    #expect(try client.fetch(id: body.id).lines.map(\.text) == ["二行目を改稿", "最初の一行", "追加した一行"])
+
+    try client.delete(id: body.id)
+
+    #expect(try client.fetchAll().isEmpty)
+}
+
+@MainActor
+@Test func manuscriptBodyClientDeletesRemovedPagesAndLinesDuringUpdate() throws {
+    let container = try ModelContainerFactory.makeShared(inMemoryOnly: true)
+    let client = ManuscriptBodyClient(modelContext: container.mainContext)
+
+    let bodyID = try #require(UUID(uuidString: "00000000-0000-0000-0000-000000000703"))
+    let firstPageID = try #require(UUID(uuidString: "00000000-0000-0000-0000-000000000611"))
+    let removedPageID = try #require(UUID(uuidString: "00000000-0000-0000-0000-000000000612"))
+    let addedPageID = try #require(UUID(uuidString: "00000000-0000-0000-0000-000000000613"))
+    let removedLineID = try #require(UUID(uuidString: "00000000-0000-0000-0000-000000000511"))
+    let keptLineID = try #require(UUID(uuidString: "00000000-0000-0000-0000-000000000512"))
+    let removedPageLineID = try #require(UUID(uuidString: "00000000-0000-0000-0000-000000000513"))
+    let addedLineID = try #require(UUID(uuidString: "00000000-0000-0000-0000-000000000514"))
+
+    let body = try ManuscriptBody(
+        id: bodyID,
+        pages: [
+            ManuscriptPage(
+                id: firstPageID,
+                lines: [
+                    ManuscriptLine(id: removedLineID, text: "あとで戻す行"),
+                    ManuscriptLine(id: keptLineID, text: "残る行"),
+                ]
+            ),
+            ManuscriptPage(
+                id: removedPageID,
+                lines: [
+                    ManuscriptLine(id: removedPageLineID, text: "あとで戻すページの行"),
+                ]
+            ),
+        ]
+    )
+    try client.create(body)
+
+    let bodyWithoutOldRecords = try ManuscriptBody(
+        id: bodyID,
+        pages: [
+            ManuscriptPage(
+                id: firstPageID,
+                lines: [
+                    ManuscriptLine(id: keptLineID, text: "残る行を改稿"),
+                ]
+            ),
+            ManuscriptPage(
+                id: addedPageID,
+                lines: [
+                    ManuscriptLine(id: addedLineID, text: "追加した行"),
+                ]
+            ),
+        ]
+    )
+    try client.update(bodyWithoutOldRecords)
+
+    #expect(try container.mainContext.fetch(FetchDescriptor<ManuscriptPageEntity>()).count == 2)
+    #expect(try container.mainContext.fetch(FetchDescriptor<ManuscriptLineEntity>()).count == 2)
+
+    let bodyReusingRemovedIDs = try ManuscriptBody(
+        id: bodyID,
+        pages: [
+            ManuscriptPage(
+                id: firstPageID,
+                lines: [
+                    ManuscriptLine(id: removedLineID, text: "戻した行"),
+                ]
+            ),
+            ManuscriptPage(
+                id: removedPageID,
+                lines: [
+                    ManuscriptLine(id: removedPageLineID, text: "戻したページの行"),
+                ]
+            ),
+        ]
+    )
+    try client.update(bodyReusingRemovedIDs)
+
+    #expect(try client.fetch(id: bodyID) == bodyReusingRemovedIDs)
+    #expect(try container.mainContext.fetch(FetchDescriptor<ManuscriptPageEntity>()).count == 2)
+    #expect(try container.mainContext.fetch(FetchDescriptor<ManuscriptLineEntity>()).count == 2)
+}
+
+@MainActor
+@Test func manuscriptBodyClientPersistsWrappedTextBody() throws {
+    let container = try ModelContainerFactory.makeShared(inMemoryOnly: true)
+    let client = ManuscriptBodyClient(modelContext: container.mainContext)
+    let text = String(
+        repeating: "あ",
+        count: ManuscriptLine.maxCharacterCount * ManuscriptPage.maxLineCount + 1
+    )
+    let body = try ManuscriptBody(
+        id: #require(UUID(uuidString: "00000000-0000-0000-0000-000000000702")),
+        text: text
+    )
+
+    try client.create(body)
+
+    let fetchedBody = try client.fetch(id: body.id)
+    #expect(fetchedBody.pageCount == 2)
+    #expect(fetchedBody.pages[0].lines.count == ManuscriptPage.maxLineCount)
+    #expect(fetchedBody.pages[1].lines.count == 1)
+    #expect(fetchedBody.pages[1].lines[0].text.count == 1)
 }

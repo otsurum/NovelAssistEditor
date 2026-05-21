@@ -65,6 +65,50 @@ public extension Color {
         #endif
     }
 
+    static var manuscriptViewBackground: Color {
+        #if os(macOS)
+            Color(nsColor: .underPageBackgroundColor)
+        #else
+            Color(.systemGroupedBackground)
+        #endif
+    }
+
+    static var manuscriptPaperBackground: Color {
+        #if os(macOS)
+            Color(nsColor: .white)
+        #else
+            Color(.white)
+        #endif
+    }
+
+    static var manuscriptRulerBackground: Color {
+        #if os(macOS)
+            Color(nsColor: .darkGray)
+        #else
+            Color(.darkGray)
+        #endif
+    }
+
+    static var manuscriptStatusBarBackground: Color {
+        #if os(macOS)
+            Color(nsColor: .darkGray)
+        #else
+            Color(.darkGray)
+        #endif
+    }
+
+    static var manuscriptPageBackground: Color {
+        #if os(macOS)
+            Color(nsColor: .textBackgroundColor)
+        #else
+            Color(.systemBackground)
+        #endif
+    }
+
+    static var manuscriptEditorBackground: Color {
+        appContentBackground
+    }
+
     private static var appContentBackground: Color {
         #if os(macOS)
             Color(nsColor: .textBackgroundColor)

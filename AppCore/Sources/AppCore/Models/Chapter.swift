@@ -5,6 +5,10 @@ public struct Chapter: Identifiable, Equatable, Sendable {
     public var episodeTitle: String
     public var body: String
 
+    public var manuscriptBody: ManuscriptBody {
+        ManuscriptBody(id: id, text: body)
+    }
+
     public init(
         id: UUID = UUID(),
         episodeTitle: String,
