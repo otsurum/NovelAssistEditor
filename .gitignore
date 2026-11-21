@@ -49,3 +49,5 @@ Package.resolved
 # =========================
 .env
 .env.*
+# Claude Code のローカル設定（セッション固有パスを含む）
+.claude/settings.local.json
